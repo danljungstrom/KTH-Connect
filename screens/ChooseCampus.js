@@ -21,8 +21,7 @@ export const ChooseCampus = ({navigation}) => {
             <Text style={styles.listText} onPress={() => console.log('User chose: ' + item.name) + navigation.navigate('Feed')}>{item.name}</Text>
         }
         keyExtractor={(item) => item.id}
-      />
-      <StatusBar barStyle= 'light-content' />
+        />
     </View>
   );
 }

@@ -7,7 +7,6 @@ export const Feed = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.text} onPress={() => navigation.navigate('ChooseCampus')}>Feed</Text>
-      <StatusBar barStyle= 'light-content' />
     </View>
   );
 }

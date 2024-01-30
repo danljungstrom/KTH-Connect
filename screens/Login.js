@@ -16,7 +16,6 @@ export const Login = ({navigation}) => {
       <Pressable style={styles.button} onPress={() => console.log('Login:', username, password) + navigation.navigate('ChooseCampus')}>
         <Text style={styles.buttonText}>Login</Text>
       </Pressable>
-      <StatusBar barStyle = "light-content" color="rgba(0, 53, 111, 1)" />
     </View>
   );
 }
