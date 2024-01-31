@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Login } from './screens/Login';
 import { ChooseCampus } from './screens/ChooseCampus';
-import { Feed } from './screens/Feed';
+import { Feed } from './screens/MainScreens/Feed';
 
 const Stack = createNativeStackNavigator();
 StatusBar.setBarStyle('light-content');

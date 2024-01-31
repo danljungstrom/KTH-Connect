@@ -1,10 +1,36 @@
-import React from 'react';
-import { StatusBar } from 'expo-status-bar';
+import React, { useState } from "react";
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native';
+import SMTPMailer from 'react-native-smtp-mailer';
 
 export const Login = ({navigation}) => {
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  login = () => {
+    console.log('Login:', username, password);
+
+    SMTPMailer.createTransport({
+      host: 'smtp.kth.se',
+      port: 587,
+      secure: true,
+      auth: {
+        user: username,
+        pass: password,
+      },
+    })
+    .verify((error, success) => {
+      if (error) {
+        console.log('Error:', error);
+        setIsAuthenticated(false);
+        Alert.alert('Login Failed', 'Please check your credentials');
+      } else {
+        console.log('Success:', success);
+        setIsAuthenticated(true);
+        navigation.navigate('ChooseCampus');
+      }
+    });
+  }
 
   return (
     <View style={styles.container}>
@@ -13,7 +39,7 @@ export const Login = ({navigation}) => {
       <TextInput style={styles.input} onChangeText={setUsername}></TextInput>
       <Text style={styles.text}>Password</Text>
       <TextInput style={styles.input} onChangeText={setPassword} secureTextEntry={true}></TextInput>
-      <Pressable style={styles.button} onPress={() => console.log('Login:', username, password) + navigation.navigate('ChooseCampus')}>
+      <Pressable style={styles.button} onPress={() => login()}>
         <Text style={styles.buttonText}>Login</Text>
       </Pressable>
     </View>

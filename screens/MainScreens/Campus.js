@@ -1,12 +1,12 @@
 import React from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text } from 'react-native';
 
+//TODO: Implement
 export const Feed = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text} onPress={() => navigation.navigate('ChooseCampus')}>Feed</Text>
+      <Text style={styles.text} onPress={() => navigation.navigate('ChooseCampus')}>Campus</Text>
     </View>
   );
 }
