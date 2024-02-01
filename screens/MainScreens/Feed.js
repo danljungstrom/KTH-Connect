@@ -1,12 +1,37 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Post } from '../../components/Post';
 
-//TODO: Implement
 export const Feed = ({navigation}) => {
+
+  const posts = [
+    { 
+      id:1, 
+      user:{name:"Firstname Lastname"}, 
+      content:"Picture of mangos", 
+      comments: 3,
+      likes:44,
+      liked:false
+    },
+    { 
+      id:2, 
+      user:{name:"Firstname Lastname"}, 
+      content:"Hej", 
+      comments: 5,
+      likes:676,
+      liked:false
+    },
+  ]
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text} onPress={() => navigation.navigate('ChooseCampus')}>Feed</Text>
+      {posts.map(post => 
+        <Post 
+          key={post.id}
+          post={post}
+          showLike={true}
+          showComment={true}
+        />)}
     </View>
   );
 }
