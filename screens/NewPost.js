@@ -1,12 +1,15 @@
+import { BottomTabBar } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import { CampusSelector } from '../components/CampusSelector';
 
 //TODO: Implement
-export const Campus = ({navigation}) => {
+export const NewPost = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text} onPress={() => navigation.navigate('ChooseCampus')}>Campus</Text>
+      <Text style={styles.text} onPress={() => navigation.navigate('Main')}>NewPost</Text>
+      <CampusSelector bottom={ true } />
     </View>
   );
 }

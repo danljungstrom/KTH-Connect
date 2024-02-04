@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 
 //TODO: Implement
-export const Feed = ({navigation}) => {
+export const Profile = ({navigation}) => {
 
   return (
     <View style={styles.container}>

@@ -10,7 +10,8 @@ export const Login = ({navigation}) => {
   login = () => {
     console.log('Login:', username, password);
 
-    /*SMTPMailer.createTransport({
+    /*
+    SMTPMailer.createTransport({
       host: 'smtp.kth.se',
       port: 587,
       secure: true,
@@ -29,8 +30,9 @@ export const Login = ({navigation}) => {
         setIsAuthenticated(true);
         navigation.navigate('ChooseCampus');
       }
-    });*/
-    navigation.navigate('ChooseCampus');
+    });
+    */
+   navigation.navigate('ChooseCampus');
   }
 
   return (
