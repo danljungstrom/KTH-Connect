@@ -11,7 +11,8 @@ export const Feed = ({navigation}) => {
       content:"Picture of mangos", 
       comments: 3,
       likes:44,
-      liked:false
+      liked:false,
+      image: '../../assets/mango.jpg'
     },
     { 
       id:2, 

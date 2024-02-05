@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Dimensions } from 'react-native';
 import { LikeButton } from './LikeButton';
 import { CommentButton } from './CommentButton';
 import { PostAuthor } from './PostAuthor';
+import { ResizableImage } from './ResizableImage';
 
 export const Post = ({post, showLike, showComment}) => {
 
@@ -23,7 +24,11 @@ export const Post = ({post, showLike, showComment}) => {
 
         <PostAuthor name={post.user.name}/>
 
-        <View>
+        <View style={styles.contentContainer}>
+            {post.image && 
+            <ResizableImage uri={post.image} 
+                width={Dimensions.get('window').width}
+                style={styles.image}/>}
             <Text style={styles.content}>{post.content}</Text>
         </View>
 
@@ -44,6 +49,14 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderColor: '#1E364E',
         borderTopWidth: 1,
+    },
+    contentContainer: {
+        flexDirection:'column',
+        flex: ''
+    },
+    image: {
+        marginLeft:-10,
+        marginVertical:10
     },
     content: {
         marginTop: 6,
