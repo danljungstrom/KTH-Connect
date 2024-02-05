@@ -4,6 +4,7 @@ import { LikeButton } from './LikeButton';
 import { CommentButton } from './CommentButton';
 import { PostAuthor } from './PostAuthor';
 import { ResizableImage } from './ResizableImage';
+import {colors} from "../assets/colors";
 
 export const Post = ({post, showLike, showComment}) => {
 
@@ -29,12 +30,17 @@ export const Post = ({post, showLike, showComment}) => {
             <ResizableImage uri={post.image} 
                 width={Dimensions.get('window').width}
                 style={styles.image}/>}
+            {post.eventInfo && <Text style={styles.eventTitle}>{post.eventInfo.title}</Text>}
+            {post.eventInfo &&
+                <Text style={styles.eventDates}>{post.eventInfo.startDate} → {post.eventInfo.endDate}</Text>}
             <Text style={styles.content}>{post.content}</Text>
         </View>
 
         <View style={styles.buttonContainer}>
-            {showLike && <LikeButton onPress={onLike} count={likes} liked={liked}/>}
-            {showComment && <CommentButton onPress={navigateToPost} count={post.comments}/>}
+            {!post.eventInfo && showLike &&
+                <LikeButton onPress={onLike} count={likes} liked={liked}/>}
+            {!post.eventInfo && showComment &&
+                <CommentButton onPress={navigateToPost} count={post.comments}/>}
         </View>
         
     </View>
@@ -47,28 +53,32 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 20,
         marginBottom: 10,
-        borderColor: '#1E364E',
+        borderColor: colors.border,
         borderTopWidth: 1,
+        rowGap:15
     },
     contentContainer: {
         flexDirection:'column',
-        flex: ''
+        rowGap: 10
     },
     image: {
         marginLeft:-10,
-        marginVertical:10
     },
     content: {
-        marginTop: 6,
-        marginHorizontal: 4,
-        fontSize: 16,
-        color: 'white',
+        fontSize: 14,
+        color: colors.text,
         textAlign: 'left',
     },
     buttonContainer: {
-        marginTop: 5,
         flexDirection: 'row',
         gap:7,
         justifyContent: 'flex-end',
+    },
+    eventTitle: {
+        color: colors.text,
+        fontSize:26,
+    },
+    eventDates: {
+        color: colors.text,
     }
 });

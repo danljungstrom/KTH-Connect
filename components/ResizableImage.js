@@ -5,10 +5,7 @@ export const ResizableImage = ({uri, width, style}) => {
 
     const [aspectRatio, setAspectRatio] = useState(1)
 
-    console.log(uri)
-
     Image.getSize(uri, (width, height) => {
-        console.log(width)
         setAspectRatio(width / height)
     })
 
