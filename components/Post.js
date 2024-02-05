@@ -5,15 +5,21 @@ import { CommentButton } from './CommentButton';
 import { PostAuthor } from './PostAuthor';
 import { ResizableImage } from './ResizableImage';
 import {colors} from "../assets/colors";
+import {ActionButton} from "./ActionButton";
 
 export const Post = ({post, showLike, showComment}) => {
 
     const [likes, setLikes] = React.useState(post.likes)
     const [liked, setLiked] = React.useState(post.liked)
+    const [attending, setAttending] = React.useState(post.eventInfo && post.eventInfo.attending)
 
     function onLike() {
         setLikes(liked ? (likes - 1) : (likes + 1))
         setLiked(!liked)
+    }
+
+    function onAttend() {
+        setAttending(!attending)
     }
 
     function navigateToPost() {
@@ -42,6 +48,8 @@ export const Post = ({post, showLike, showComment}) => {
             {!post.eventInfo && showComment &&
                 <CommentButton onPress={navigateToPost} count={post.comments}/>}
         </View>
+
+        {post.eventInfo && <ActionButton onPress={onAttend} text={attending ? 'Attending' : 'Attend'}/>}
         
     </View>
     );
@@ -80,5 +88,5 @@ const styles = StyleSheet.create({
     },
     eventDates: {
         color: colors.text,
-    }
+    },
 });

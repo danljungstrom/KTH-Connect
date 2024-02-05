@@ -55,5 +55,6 @@ export const Feed = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.background,
+    paddingBottom: 10
   },
 });
