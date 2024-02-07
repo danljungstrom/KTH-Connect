@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, {useState} from 'react';
 import { StyleSheet, View, Text, Image, Dimensions } from 'react-native';
-import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
+
 
 
 
@@ -11,16 +11,6 @@ import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 
 
 export const Campus = () => {
-
-  const [selectedRegion, setSelectedRegion] = useState({
-    latitude: 59.40464,
-    longitude: 17.95018,
-    latitudeDelta: 0.002,
-    longitudeDelta: 0.002,
-  });
-
-  const mapRef = useRef(null);
-
 
 
   const campus = {
@@ -40,20 +30,6 @@ export const Campus = () => {
 
 
     <View style={styles.container}>
-
-      <MapView
-        ref={mapRef}
-        style={styles.map}
-        provider={PROVIDER_DEFAULT}
-        initialRegion={selectedRegion}
-        onRegionChangeComplete={region => setSelectedRegion(region)}
-      >
-        <Marker
-          coordinate={{ latitude: 59.40464, longitude: 17.95018 }}
-          title="KTH Kista"
-          description="Kistagången 16, 164 40 KISTA"
-        />
-      </MapView>
 
       <Text style={styles.headerText}>{campus.name}</Text>
 
@@ -78,7 +54,8 @@ export const Campus = () => {
         <Text style={styles.actualEmail}>{campus.actualEmail}</Text>
 
       </View>
-
+      <Image style={styles.mapPicture} source={require('../../assets/exMapKista.png')} />
+          
 
     </View>
 
@@ -187,10 +164,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  map: {
-    width: 25,
-    height: 25,
-  }
+ mapPicture: {
+  marginTop: 50, 
+   width: 500,
+   height: 300,
+ }
 
 
 
