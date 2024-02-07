@@ -18,7 +18,7 @@ export const ChooseCampus = ({navigation}) => {
         style={styles.list}
         data={campusList}
         renderItem={({item}) => 
-            <Text style={styles.listText} onPress={() => console.log('User chose: ' + item.name) + navigation.navigate('Feed')}>{item.name}</Text>
+            <Text style={styles.listText} onPress={() => console.log('User chose: ' + item.name) + navigation.navigate('Campus')}>{item.name}</Text>
         }
         keyExtractor={(item) => item.id}
         />

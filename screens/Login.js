@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native';
-import SMTPMailer from 'react-native-smtp-mailer';
+//import SMTPMailer from 'react-native-smtp-mailer';
 
 export const Login = ({navigation}) => {
   const [username, setUsername] = useState('');
@@ -10,6 +10,7 @@ export const Login = ({navigation}) => {
   login = () => {
     console.log('Login:', username, password);
 
+    /*
     SMTPMailer.createTransport({
       host: 'smtp.kth.se',
       port: 587,
@@ -30,6 +31,8 @@ export const Login = ({navigation}) => {
         navigation.navigate('ChooseCampus');
       }
     });
+    */
+   navigation.navigate('ChooseCampus');
   }
 
   return (
