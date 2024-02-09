@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Text, TouchableOpacity, View, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useCampus } from '../services/CampusProvider';
+import {arrowDownIcon, arrowUpIcon} from "../assets/icons";
 
 export const CampusSelector = ({ bottom }) => {
   const { selectedCampus, setSelectedCampus } = useCampus();
@@ -38,11 +39,7 @@ export const CampusSelector = ({ bottom }) => {
     <View style={[styles.container, { bottom: bottom ? 0 : 70 }]}>
       <TouchableOpacity onPress={toggleModal} style={styles.selector}>
         <Text style={styles.campusText}>{selectedCampus.name}</Text>
-        <MaterialCommunityIcons
-          name='chevron-up' 
-          size={24}
-          color="white"
-        />
+        {arrowUpIcon}
       </TouchableOpacity>
 
       <Modal
@@ -62,12 +59,7 @@ export const CampusSelector = ({ bottom }) => {
                   <Text style={[styles.itemText, styles.selectedCampusText]}>
                     {selectedCampus.name}
                   </Text>
-                  <MaterialCommunityIcons
-                    name="chevron-down" 
-                    size={24}
-                    color="white"
-                    style={styles.downButton}
-                  />
+                  {arrowDownIcon}
                 </TouchableOpacity>
               }
               data={getSortedCampuses()}
@@ -102,6 +94,7 @@ const styles = StyleSheet.create({
   },
   campusText: {
     color: 'white',
+    fontWeight: 'bold',
   },
   modalOverlay: {
     flex: 1,
@@ -137,10 +130,6 @@ const styles = StyleSheet.create({
   selectedCampusText: {
     fontWeight: 'bold',
   },
-  campusText:{
-    fontWeight: 'bold',
-    color: 'white',
-  },  
   downButton: {
     paddingBottom: 5,
     marginTop: -3,

@@ -8,6 +8,16 @@ import { CampusSelector} from '../components/CampusSelector';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useCampus } from '../services/CampusProvider';
 
+import {
+  campusIcon,
+  campusIconFilled, chatIcon,
+  feedIcon,
+  feedIconFilled,
+  plusIcon,
+  profileIcon,
+  profileIconFilled
+} from "../assets/icons";
+
 //Screen names
 const feedName = 'Feed';
 const campusName = 'Campus';
@@ -16,19 +26,13 @@ const chatName = 'Chat';
 const profileName = 'Profile';
 
 //Button component for New post and Chat (non-navbar-screens)
-const NavButton = ({ iconName, label, onPress }) => {
+const NavButton = ({ icon, label, onPress }) => {
   return (
-    <View style={label === newPostName ? styles.navPostButtonContainer : styles.navButtonContainer}>
-      <Pressable onPress={onPress}>
-        <MaterialCommunityIcons 
-          name={iconName} 
-          color='white' 
-          size={label === newPostName ? 40 : 30}
-          margin-top={label === newPostName ? -5 : 0}
-          margin-bottom={label === newPostName ? -5 : 0}
-        />
+    <View style={styles.navButtonContainer}>
+      <Pressable onPress={onPress} style={{height:30, alignItems: 'center', justifyItems: 'center'}}>
+        {icon}
       </Pressable>
-      <Text style={label === newPostName ? styles.navPostButtonText : styles.navButtonText} margin-top={label === newPostName ? -10 : 0}>{label}</Text>
+      <Text style={styles.navButtonText}>{label}</Text>
     </View>
   );
 };
@@ -54,16 +58,16 @@ export const Main = ({navigation}) => {
             let rn = route.name;
             
             if(rn === feedName) {
-              icon = focused ? 'home' : 'home-outline';
+              icon = focused ? feedIcon : feedIconFilled;
             }
             else if(rn === campusName){
-              icon = focused ? 'map-marker' : 'map-marker-outline';
+              icon = focused ? campusIconFilled : campusIcon;
             }
             else if(rn === profileName) {
-              icon = focused ? 'account-circle' : 'account-circle-outline'
+              icon = focused ? profileIconFilled : profileIcon
             }
 
-            return <MaterialCommunityIcons name={ icon } color='white' size={30}/>
+            return icon
           },
           tabBarActiveTintColor: 'white',
           tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.6)',
@@ -87,7 +91,7 @@ export const Main = ({navigation}) => {
           component={DummyComponent}
           options={{
             tabBarButton: () => (
-              <NavButton iconName="plus" label={newPostName} onPress={() => navigation.navigate('NewPost')} />
+              <NavButton icon={plusIcon} label={newPostName} onPress={() => navigation.navigate('NewPost')} />
             )
           }}
         />
@@ -96,7 +100,7 @@ export const Main = ({navigation}) => {
           component={DummyComponent}
           options={{
             tabBarButton: () => (
-              <NavButton iconName="chat-outline" label={chatName} onPress={() => navigation.navigate('Chat')} />
+              <NavButton icon={chatIcon} label={chatName} onPress={() => navigation.navigate('Chat')} />
             )
           }}
         />
@@ -128,7 +132,7 @@ const styles = StyleSheet.create({
   navPostButtonText:{
     color: 'rgba(255, 255, 255, 0.6)',
     fontSize: 12,
-    marginTop: -1,
+    marginTop: 14,
   },
   navButton: {
     flex: 1,
