@@ -13,7 +13,8 @@ export const Feed = ({navigation}) => {
       comments: 3,
       likes: 44,
       liked: false,
-      image: '../../assets/mango.jpg'
+      image: '../../assets/mango.jpg',
+      imageReq: require('../../assets/mango.jpg'),
     },
     { 
       id: 2,
@@ -29,6 +30,7 @@ export const Feed = ({navigation}) => {
       content: "Event info lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       comments: 4,
       image: '../../assets/kth.png',
+      imageReq: require('../../assets/kth.png'),
       eventInfo: {
         title: "Event Title",
         attends: 12,
