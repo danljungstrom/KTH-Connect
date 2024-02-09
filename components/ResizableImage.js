@@ -1,15 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { Image } from "react-native";
 
-export const ResizableImage = ({image, uri, width, style}) => {
+export const ResizableImage = ({image, width, style}) => {
 
-    const [aspectRatio, setAspectRatio] = useState(1)
-
-    Image.getSize(uri, (width, height) => {
-        setAspectRatio(width / height)
-    })
+    const aspectRatio = image.width / image.height
 
     return (
-        <Image source={image} style={{...style, width: width, height: width / aspectRatio}}/>
+        <Image source={image.source} style={{...style, width: width, height: width / aspectRatio}}/>
     );
 }

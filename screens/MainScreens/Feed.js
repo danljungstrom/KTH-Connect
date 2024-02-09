@@ -13,8 +13,11 @@ export const Feed = ({navigation}) => {
       comments: 3,
       likes: 44,
       liked: false,
-      image: '../../assets/mango.jpg',
-      imageReq: require('../../assets/mango.jpg'),
+      image: {
+        source: require('../../assets/mango.jpg'),
+        height:229,
+        width:640
+      },
     },
     { 
       id: 2,
@@ -29,8 +32,11 @@ export const Feed = ({navigation}) => {
       user: {name: "Firstname Lastname"},
       content: "Event info lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       comments: 4,
-      image: '../../assets/kth.png',
-      imageReq: require('../../assets/kth.png'),
+      image: {
+        source: require('../../assets/kth.png'),
+        height:108,
+        width:306
+      },
       eventInfo: {
         title: "Event Title",
         attends: 12,
@@ -43,7 +49,7 @@ export const Feed = ({navigation}) => {
 
   return (
     <ScrollView style={styles.container}>
-      {posts.map(post => 
+      {posts.map(post =>
         <Post 
           key={post.id}
           post={post}

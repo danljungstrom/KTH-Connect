@@ -34,8 +34,7 @@ export const Post = ({post, showLike, showComment}) => {
         <View style={styles.contentContainer}>
             {post.image && 
             <ResizableImage
-                image={post.imageReq}
-                uri={post.image}
+                image={post.image}
                 width={Dimensions.get('window').width}
                 style={styles.image}/>}
             {post.eventInfo && <Text style={styles.eventTitle}>{post.eventInfo.title}</Text>}
