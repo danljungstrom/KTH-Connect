@@ -14,7 +14,7 @@ export const ActionButton = ({onPress, text}) => {
 const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
-    backgroundColor: colors.accent,
+    backgroundColor: colors.actionButtons,
     paddingVertical: 8,
     width:140,
     borderRadius: 10,
