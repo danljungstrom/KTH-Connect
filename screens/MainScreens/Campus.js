@@ -5,26 +5,7 @@ import { StyleSheet, View, Text, Image, Dimensions } from 'react-native';
 
 
 //TODO: Implement
-
-
-
-
-
-export const Campus = () => {
-
-
-  const campus = {
-    name: "KTH Kista",
-    visitingAdress: "Visiting Address:",
-    actualAdress: "Kistagången 16, 164 40 KISTA",
-    postalAdress: "Postal Adress:",
-    actualPostalAdress: "Electrum 229, 164 40 KISTA",
-    phoneNumber: "Phone Number:",
-    actualPhoneNumber: "08-790 40 00",
-    email: "Email:",
-    actualEmail: "service@eecs.kth.se",
-
-  }
+export const Feed = ({navigation}) => {
 
   return (
 
