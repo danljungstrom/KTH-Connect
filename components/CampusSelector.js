@@ -39,7 +39,7 @@ export const CampusSelector = ({ bottom }) => {
       <TouchableOpacity onPress={toggleModal} style={styles.selector}>
         <Text style={styles.campusText}>{selectedCampus.name}</Text>
         <MaterialCommunityIcons
-          name={modalVisible ? "chevron-up" : "chevron-down"} 
+          name='chevron-up' 
           size={24}
           color="white"
         />
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 5,
     paddingLeft: 10,
+    fontWeight: 'bold',
   },
   campusText: {
     color: 'white',
@@ -127,6 +128,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 5,
     paddingBottom: 0,
+    fontWeight: 'bold',
   },
   itemText: {
     fontSize: 14,
@@ -135,6 +137,10 @@ const styles = StyleSheet.create({
   selectedCampusText: {
     fontWeight: 'bold',
   },
+  campusText:{
+    fontWeight: 'bold',
+    color: 'white',
+  },  
   downButton: {
     paddingBottom: 5,
     marginTop: -3,
