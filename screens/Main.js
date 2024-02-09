@@ -18,17 +18,17 @@ const profileName = 'Profile';
 //Button component for New post and Chat (non-navbar-screens)
 const NavButton = ({ iconName, label, onPress }) => {
   return (
-    <View style={styles.navButtonContainer}>
+    <View style={label === newPostName ? styles.navPostButtonContainer : styles.navButtonContainer}>
       <Pressable onPress={onPress}>
         <MaterialCommunityIcons 
           name={iconName} 
           color='white' 
           size={label === newPostName ? 40 : 30}
-          marginTop={label === newPostName ? -5 : 0}
-          marginBottom={label === newPostName ? -5 : 0}
+          margin-top={label === newPostName ? -5 : 0}
+          margin-bottom={label === newPostName ? -5 : 0}
         />
       </Pressable>
-      <Text style={styles.navButtonText}>{label}</Text>
+      <Text style={label === newPostName ? styles.navPostButtonText : styles.navButtonText} margin-top={label === newPostName ? -10 : 0}>{label}</Text>
     </View>
   );
 };
@@ -113,10 +113,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 5,
   },
+  navPostButtonContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+    paddingTop: 0,
+  },
   navButtonText: {
     color: 'rgba(255, 255, 255, 0.6)',
     fontSize: 12,
     marginTop: 3,
+  },
+  navPostButtonText:{
+    color: 'rgba(255, 255, 255, 0.6)',
+    fontSize: 12,
+    marginTop: -1,
   },
   navButton: {
     flex: 1,

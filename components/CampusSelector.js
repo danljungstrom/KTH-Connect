@@ -84,8 +84,8 @@ export const CampusSelector = ({ bottom }) => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 70,
-    width: 160,
+    bottom: 69,
+    width: 170,
     alignSelf: 'center',
     backgroundColor: '#132E49',
     zIndex: 1,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalView: {
-    width: 160,
+    width: 170,
     alignSelf: 'center',
     backgroundColor: '#132E49',
     borderTopRightRadius: 10,

@@ -6,7 +6,7 @@ export const Chat = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text} onPress={() => navigation.navigate('Main')}>Chat</Text>
+      <Text style={styles.text} onPress={() => navigation.navigate('Main')}>This page will contain all chats with other students. Click the text to return to the previous page.</Text>
     </View>
   );
 }
@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     color: 'rgba(123, 163, 191, 1)',
+    margin: 30,
   },
   container: {
     flex: 1,
