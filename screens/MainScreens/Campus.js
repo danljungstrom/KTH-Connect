@@ -2,46 +2,36 @@ import React, {useState} from 'react';
 import { StyleSheet, View, Text, Image, Dimensions } from 'react-native';
 import { useCampus } from '../../services/CampusProvider';
 
-
-
 //TODO: Implement
 export const Campus = () => {
   const { selectedCampus } = useCampus();
-
-  const campus = {
-    name: selectedCampus.name,
-    adress: "Adress 220, 100 50 Sweden",
-    postalAdress: "Otheradress 150, 120 70 Sweden",
-    phoneNumber: "08-777 55 44",
-    email: "service@eecs.kth.se",
-  }
 
   return (
 
 
     <View style={styles.container}>
 
-      <Text style={styles.headerText}>{campus.name}</Text>
+      <Text style={styles.headerText}>{selectedCampus.name}</Text>
 
       <View style={styles.addressRow}>
         <Text style={styles.visitingAdress}>Visiting Address: </Text>
-        <Text style={styles.actualAdress}>{campus.adress}</Text>
+        <Text style={styles.actualAdress}>{selectedCampus.address}</Text>
       </View>
 
       <View style={styles.postalAddressRow}>
         <Text style={styles.postalAdress}>Postal Adress: </Text>
-        <Text style={styles.actualPostalAdress}>{campus.postalAdress}</Text>
+        <Text style={styles.actualPostalAdress}>{selectedCampus.postalAddress}</Text>
       </View>
 
       <View style={styles.phoneRow}>
         <Text style={styles.phoneNumber}>Phone Number: </Text>
-        <Text style={styles.actualPhoneNumber}>{campus.phoneNumber}</Text>
+        <Text style={styles.actualPhoneNumber}>{selectedCampus.phone}</Text>
       </View>
 
       <View style={styles.emailRow}>
 
         <Text style={styles.email}>Email: </Text>
-        <Text style={styles.actualEmail}>{campus.email}</Text>
+        <Text style={styles.actualEmail}>{selectedCampus.email}</Text>
 
       </View>
       <Image style={styles.mapPicture} source={require('../../assets/exMapKista.png')} />
@@ -95,7 +85,7 @@ const styles = StyleSheet.create({
   postalAdress: {
     fontSize: 15,
     color: 'rgba(255, 255, 255, 1)',
-    alignSelf: 'left',
+    alignSelf: 'flex-start',
     marginLeft: 30,
     paddingTop: 10,
     fontWeight: 'bold',
@@ -103,7 +93,7 @@ const styles = StyleSheet.create({
   actualPostalAdress: {
     fontSize: 15,
     color: 'rgba(255, 255, 255, 1)',
-    alignSelf: 'left',
+    alignSelf: 'flex-start',
     marginLeft: 5,
     paddingTop: 10,
 
@@ -116,7 +106,7 @@ const styles = StyleSheet.create({
   phoneNumber: {
     fontSize: 15,
     color: 'rgba(255, 255, 255, 1)',
-    alignSelf: 'left',
+    alignSelf: 'flex-start',
     marginLeft: 30,
     paddingTop: 10,
     fontWeight: 'bold',
@@ -124,7 +114,7 @@ const styles = StyleSheet.create({
   actualPhoneNumber: {
     fontSize: 15,
     color: 'rgba(255, 255, 255, 1)',
-    alignSelf: 'left',
+    alignSelf: 'flex-start',
     marginLeft: 5,
     paddingTop: 10,
 
@@ -137,7 +127,7 @@ const styles = StyleSheet.create({
   email: {
     fontSize: 15,
     color: 'rgba(255, 255, 255, 1)',
-    alignSelf: 'left',
+    alignSelf: 'flex-start',
     marginLeft: 30,
     paddingTop: 10,
     fontWeight: 'bold',
@@ -145,7 +135,7 @@ const styles = StyleSheet.create({
   actualEmail: {
     fontSize: 15,
     color: 'rgba(255, 255, 255, 1)',
-    alignSelf: 'left',
+    alignSelf: 'flex-start',
     marginLeft: 5,
     paddingTop: 10,
 

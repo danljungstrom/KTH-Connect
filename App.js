@@ -7,6 +7,7 @@ import { ChooseCampus } from './screens/ChooseCampus';
 import { Chat } from './screens/Chat';
 import { NewPost } from './screens/NewPost';
 import { Main } from './screens/Main';  
+import { UserProvider } from './services/UserProvider';
 import { CampusProvider } from './services/CampusProvider';
 
 const Stack = createNativeStackNavigator();
@@ -14,16 +15,18 @@ StatusBar.setBarStyle('light-content');
 
 export default function App() {
   return (
-    <CampusProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
-          <Stack.Screen name="ChooseCampus" component={ChooseCampus} options={{ headerShown: false }}/>
-          <Stack.Screen name="Main" component={Main} options={{ headerShown: false }}/>
-          <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }}/>
-          <Stack.Screen name="NewPost" component={NewPost} options={{ headerShown: false }}/>
-        </Stack.Navigator>
-      </NavigationContainer>
-    </CampusProvider>
+    <UserProvider>
+      <CampusProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
+            <Stack.Screen name="ChooseCampus" component={ChooseCampus} options={{ headerShown: false }}/>
+            <Stack.Screen name="Main" component={Main} options={{ headerShown: false }}/>
+            <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }}/>
+            <Stack.Screen name="NewPost" component={NewPost} options={{ headerShown: false }}/>
+          </Stack.Navigator>
+        </NavigationContainer>
+      </CampusProvider>
+    </UserProvider>
   );
 };

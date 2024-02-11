@@ -4,29 +4,21 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useCampus } from '../services/CampusProvider';
 
 export const CampusSelector = ({ bottom }) => {
-  const { selectedCampus, setSelectedCampus } = useCampus();
+  const { selectedCampus, setSelectedCampus, campuses } = useCampus();
   const [ modalVisible, setModalVisible ] = useState(false);
 
   const toggleModal = () => setModalVisible(!modalVisible);
   const chooseCampus = (campus) => {
-    setSelectedCampus(campus);
+    setSelectedCampus(campus.id);
     toggleModal();
   };
 
   //Sort campuses and remove the current one.
   const getSortedCampuses = () => {
-    return campus
+    return campuses
       .filter(c => c.id !== selectedCampus.id)
       .sort((a, b) => a.name.localeCompare(b.name));
   };
-
-  const campus = [
-      { id: 1, name: 'KTH Flemingsberg' },
-      { id: 2, name: 'KTH Kista' },
-      { id: 3, name: 'KTH Solna' },
-      { id: 4, name: 'KTH Södertälje' },
-      { id: 5, name: 'KTH Valhallavägen' },
-  ];
 
   const renderCampusItem = ({ item }) => (
     <TouchableOpacity style={styles.item} onPress={() => chooseCampus(item)}>

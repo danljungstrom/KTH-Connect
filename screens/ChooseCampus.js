@@ -2,15 +2,12 @@ import { StyleSheet, View, Image, FlatList, Text } from 'react-native';
 import { useCampus } from '../services/CampusProvider';
 
 export const ChooseCampus = ({navigation}) => {
-  const { setSelectedCampus } = useCampus();
+  const { setSelectedCampus, campuses } = useCampus();
 
-  const campusList = [
-    { id: 1, name: 'KTH Flemingsberg', postal: "SE", zip: "666 66" },
-    { id: 2, name: 'KTH Kista' },
-    { id: 3, name: 'KTH Solna' },
-    { id: 4, name: 'KTH Södertälje' },
-    { id: 5, name: 'KTH Valhallavägen' },
-  ];
+  selectedCampus = (id) => {
+    setSelectedCampus(id);
+    navigation.navigate('Main');
+  }
 
   return (
     <View style={styles.container}>
@@ -18,9 +15,9 @@ export const ChooseCampus = ({navigation}) => {
       <FlatList
         ListHeaderComponent={() => <Text style={styles.listHeader}>Choose a Campus</Text>}
         style={styles.list}
-        data={campusList}
+        data={campuses}
         renderItem={({item}) => 
-          <Text style={styles.listText} onPress={() => setSelectedCampus(item) + navigation.navigate('Main')}>{item.name}</Text>
+        <Text style={styles.listText} onPress={() => { selectedCampus(item.id) }}>{item.name}</Text>
         }
         keyExtractor={(item) => item.id}
         />

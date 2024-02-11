@@ -1,38 +1,21 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native';
-//import SMTPMailer from 'react-native-smtp-mailer';
+import { useUser } from '../services/UserProvider'; // Update the path as necessary
 
 export const Login = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { signIn } = useUser();
 
-  login = () => {
-    console.log('Login:', username, password);
+  getUser = async () => {
+    const user = await signIn(username, password);
 
-    /*
-    SMTPMailer.createTransport({
-      host: 'smtp.kth.se',
-      port: 587,
-      secure: true,
-      auth: {
-        user: username,
-        pass: password,
-      },
-    })
-    .verify((error, success) => {
-      if (error) {
-        console.log('Error:', error);
-        setIsAuthenticated(false);
-        Alert.alert('Login Failed', 'Please check your credentials');
-      } else {
-        console.log('Success:', success);
-        setIsAuthenticated(true);
-        navigation.navigate('ChooseCampus');
-      }
-    });
-    */
-   navigation.navigate('ChooseCampus');
+    if (user.currentCampus) {
+      navigation.navigate('Main');
+    }
+    else{
+      navigation.navigate('ChooseCampus')
+    }
   }
 
   return (
@@ -42,7 +25,7 @@ export const Login = ({navigation}) => {
       <TextInput style={styles.input} onChangeText={setUsername}></TextInput>
       <Text style={styles.text}>Password</Text>
       <TextInput style={styles.input} onChangeText={setPassword} secureTextEntry={true}></TextInput>
-      <Pressable style={styles.button} onPress={() => login()}>
+      <Pressable style={styles.button} onPress={() => getUser()}>
         <Text style={styles.buttonText}>Login</Text>
       </Pressable>
     </View>
