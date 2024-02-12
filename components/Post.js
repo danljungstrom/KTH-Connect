@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Dimensions } from 'react-native';
 import { LikeButton } from './LikeButton';
 import { CommentButton } from './CommentButton';
 import { PostAuthor } from './PostAuthor';
 import { ResizableImage } from './ResizableImage';
-import {colors} from "../assets/colors";
-import {ActionButton} from "./ActionButton";
+import { colors } from "../assets/colors";
+import { ActionButton } from "./ActionButton";
+import { fetchUserProfile } from '../services/UserAPI';
 
 export const Post = ({post, showLike, showComment}) => {
 
-    const [likes, setLikes] = React.useState(post.likes)
-    const [liked, setLiked] = React.useState(post.liked)
-    const [attending, setAttending] = React.useState(post.eventInfo && post.eventInfo.attending)
+    const [likes, setLikes] = useState(post.likes)
+    const [liked, setLiked] = useState(post.liked)
+    const [attending, setAttending] = useState(post.eventInfo && post.eventInfo.attending)
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+          const userData = await fetchUserProfile(post.creator);
+          setUser(userData);
+        };
+        
+        fetchUserData();
+      }, [post.creator]);
 
     function onLike() {
         setLikes(liked ? (likes - 1) : (likes + 1))
@@ -29,7 +40,7 @@ export const Post = ({post, showLike, showComment}) => {
     return (
     <View style={styles.post}>
 
-        <PostAuthor name={post.creator}/>
+        {user && <PostAuthor name={user.givenName + " " + user.familyName} image={user.image}/>}
 
         <View style={styles.contentContainer}>
             {post.image && 
@@ -50,8 +61,7 @@ export const Post = ({post, showLike, showComment}) => {
                 <CommentButton onPress={navigateToPost} count={post.comments}/>}
         </View>
 
-        {post.eventInfo && <ActionButton onPress={onAttend} text={attending ? 'Attending' : 'Attend'}/>}
-        
+        {post.eventInfo && <ActionButton onPress={onAttend} text={attending ? 'Attending' : 'Attend'}/>}       
     </View>
     );
 }

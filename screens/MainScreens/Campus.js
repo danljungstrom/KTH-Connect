@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, View, Text, Image, Dimensions} from 'react-native';
 import {useCampus} from '../../services/CampusProvider';
 
