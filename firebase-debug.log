@@ -1,0 +1,117 @@
+[debug] [2024-02-12T08:13:28.660Z] ----------------------------------------------------------------------
+[debug] [2024-02-12T08:13:28.662Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-02-12T08:13:28.662Z] CLI Version:   13.2.1
+[debug] [2024-02-12T08:13:28.663Z] Platform:      win32
+[debug] [2024-02-12T08:13:28.663Z] Node Version:  v20.11.0
+[debug] [2024-02-12T08:13:28.663Z] Time:          Mon Feb 12 2024 09:13:28 GMT+0100 (centraleuropeisk normaltid)
+[debug] [2024-02-12T08:13:28.663Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-02-12T08:13:28.748Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-02-12T08:13:28.748Z] > authorizing via signed-in user (danne165@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\danlj\OneDrive\Dokument\KTH\Mobile Development\KTH-Connect
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2024-02-12T08:14:15.663Z] Using project from CLI flag: kth-connect
+[debug] [2024-02-12T08:14:15.664Z] > refreshing access token with scopes: []
+[debug] [2024-02-12T08:14:15.665Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-02-12T08:14:15.665Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-02-12T08:14:27.268Z] *** [apiv2] error from fetch(https://www.googleapis.com/oauth2/v3/token, {"headers":{},"method":"POST","body":{"_overheadLength":545,"_valueLength":212,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------816683178016448850578484","_events":{},"_eventsCount":1}}): FetchError: request to https://www.googleapis.com/oauth2/v3/token failed, reason: getaddrinfo ENOTFOUND www.googleapis.com
+[debug] [2024-02-12T08:14:27.268Z] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2024-02-12T08:14:29.323Z] FirebaseError: Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+    at invalidCredentialError (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\auth.js:142:12)
+    at refreshTokens (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\auth.js:506:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Client.getAccessToken (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:156:22)
+    at async Client.addAuthHeader (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:147:21)
+    at async Client.request (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:103:34)
+    at async getFirebaseProject (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:295:21)
+    at async doSetup (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\init\features\project.js:85:27)
+    at async init (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\init\index.js:37:9)
+[error] 
+[error] Error: Failed to get Firebase project kth-connect. Please make sure the project exists and your account has permission to access it.
+[debug] [2024-02-12T08:14:49.235Z] ----------------------------------------------------------------------
+[debug] [2024-02-12T08:14:49.237Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js login
+[debug] [2024-02-12T08:14:49.238Z] CLI Version:   13.2.1
+[debug] [2024-02-12T08:14:49.238Z] Platform:      win32
+[debug] [2024-02-12T08:14:49.238Z] Node Version:  v20.11.0
+[debug] [2024-02-12T08:14:49.238Z] Time:          Mon Feb 12 2024 09:14:49 GMT+0100 (centraleuropeisk normaltid)
+[debug] [2024-02-12T08:14:49.238Z] ----------------------------------------------------------------------
+[debug] 
+[info] Already logged in as danne165@gmail.com
+[debug] [2024-02-12T08:15:00.873Z] ----------------------------------------------------------------------
+[debug] [2024-02-12T08:15:00.875Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-02-12T08:15:00.876Z] CLI Version:   13.2.1
+[debug] [2024-02-12T08:15:00.876Z] Platform:      win32
+[debug] [2024-02-12T08:15:00.876Z] Node Version:  v20.11.0
+[debug] [2024-02-12T08:15:00.876Z] Time:          Mon Feb 12 2024 09:15:00 GMT+0100 (centraleuropeisk normaltid)
+[debug] [2024-02-12T08:15:00.876Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-02-12T08:15:00.945Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-02-12T08:15:00.946Z] > authorizing via signed-in user (danne165@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\danlj\OneDrive\Dokument\KTH\Mobile Development\KTH-Connect
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2024-02-12T08:15:05.856Z] Using project from CLI flag: kth-connect
+[debug] [2024-02-12T08:15:05.857Z] > refreshing access token with scopes: []
+[debug] [2024-02-12T08:15:05.858Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-02-12T08:15:05.858Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-02-12T08:15:05.904Z] *** [apiv2] error from fetch(https://www.googleapis.com/oauth2/v3/token, {"headers":{},"method":"POST","body":{"_overheadLength":545,"_valueLength":212,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------534540280708866573844815","_events":{},"_eventsCount":1}}): FetchError: request to https://www.googleapis.com/oauth2/v3/token failed, reason: getaddrinfo ENOTFOUND www.googleapis.com
+[debug] [2024-02-12T08:15:05.905Z] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2024-02-12T08:15:05.909Z] FirebaseError: Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+    at invalidCredentialError (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\auth.js:142:12)
+    at refreshTokens (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\auth.js:506:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Client.getAccessToken (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:156:22)
+    at async Client.addAuthHeader (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:147:21)
+    at async Client.request (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:103:34)
+    at async getFirebaseProject (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:295:21)
+    at async doSetup (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\init\features\project.js:85:27)
+    at async init (C:\Users\danlj\AppData\Roaming\npm\node_modules\firebase-tools\lib\init\index.js:37:9)
+[error] 
+[error] Error: Failed to get Firebase project kth-connect. Please make sure the project exists and your account has permission to access it.

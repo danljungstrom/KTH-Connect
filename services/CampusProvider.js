@@ -5,7 +5,7 @@ import { db } from '../config/firebaseConfig';
 
 const CampusContext = createContext();
 
-export const CampusProvider = ({ children, navigation}) => {
+export const CampusProvider = ({ children }) => {
   const [campuses, setCampuses] = useState([]);
   const [selectedCampus, setCurrentCampus] = useState(null);
   const { currentUser } = useUser();
@@ -28,11 +28,15 @@ export const CampusProvider = ({ children, navigation}) => {
   }, []);
 
   setSelectedCampus = (campusId) => {
+    const campus = campuses.find(c => c.id === campusId);
     const userRef = doc(db, 'Users', currentUser.username);
-    setDoc(userRef, {
-      selectedCampus: campusId
-    }, { merge: true });
-    setCurrentCampus(campuses[campusId-1]);
+  
+    if (campus) {
+      setDoc(userRef, {
+        selectedCampus: campusId
+      }, { merge: true });
+      setCurrentCampus(campus);
+    }
   }
 
   return (

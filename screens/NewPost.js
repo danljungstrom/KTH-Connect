@@ -1,10 +1,31 @@
-import { BottomTabBar } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { CampusSelector } from '../components/CampusSelector';
+import { setDoc } from 'firebase/firestore';
+import { db } from '../config/firebaseConfig';
 
 //TODO: Implement
 export const NewPost = ({navigation}) => {
+
+  const addPost = async (post) => {
+    console.log(post.id)
+    const postRef = doc(db, 'Posts', post.id.toString());
+
+    try {
+      await setDoc(postRef, {
+        id: post.id,
+        creator: post.creator,
+        content: post.content,
+        comments: post.comments,
+        likes: post.likes,
+        liked: null,
+        image: post.image,
+        eventInfo: post.eventInfo,
+      });
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
+  }
 
   return (
     <View style={styles.container}>

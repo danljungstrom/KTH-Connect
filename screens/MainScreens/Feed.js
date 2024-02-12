@@ -1,51 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 import { Post } from '../../components/Post';
-import {colors} from "../../assets/colors";
+import { colors } from "../../assets/colors";
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../config/firebaseConfig'
 
-export const Feed = ({navigation}) => {
+export const Feed = () => {
+  const [posts, setPosts] = useState([]);
 
-  const posts = [
-    { 
-      id:1,
-      user: {name:"Firstname Lastname"},
-      content:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
-      comments: 3,
-      likes: 44,
-      liked: false,
-      image: {
-        source: require('../../assets/mango.jpg'),
-        height:229,
-        width:640
-      },
-    },
-    { 
-      id: 2,
-      user: {name:"Firstname Lastname"},
-      content:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. #study",
-      comments: 5,
-      likes: 676,
-      liked:false
-    },
-    {
-      id: 3,
-      user: {name: "Firstname Lastname"},
-      content: "Event info lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      comments: 4,
-      image: {
-        source: require('../../assets/kth.png'),
-        height:108,
-        width:306
-      },
-      eventInfo: {
-        title: "Event Title",
-        attends: 12,
-        attending: false,
-        startDate: "Jan 23, 2023  17:00",
-        endDate: "Jan 23, 2023  19:00"
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'Posts'));
+        const postList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setPosts(postList);
+      } catch (error) {
+        console.error("Error fetching posts: ", error);
       }
-    }
-  ]
+    };
+
+    fetchPosts();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>

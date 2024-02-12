@@ -29,7 +29,7 @@ export const Post = ({post, showLike, showComment}) => {
     return (
     <View style={styles.post}>
 
-        <PostAuthor name={post.user.name}/>
+        <PostAuthor name={post.creator}/>
 
         <View style={styles.contentContainer}>
             {post.image && 
