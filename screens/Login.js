@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native';
-import { useUser } from '../services/UserProvider'; // Update the path as necessary
+import { useUser } from '../services/UserProvider';
 
 export const Login = ({navigation}) => {
   const [username, setUsername] = useState('');

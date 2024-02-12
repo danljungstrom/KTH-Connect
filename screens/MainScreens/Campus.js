@@ -1,8 +1,7 @@
 import React from 'react';
-import {StyleSheet, View, Text, Image, Dimensions} from 'react-native';
-import {useCampus} from '../../services/CampusProvider';
+import { StyleSheet, View, Text, Image } from 'react-native';
+import { useCampus } from '../../services/CampusProvider';
 
-//TODO: Implement
 export const Campus = () => {
   const { selectedCampus } = useCampus();
 

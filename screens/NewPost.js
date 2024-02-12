@@ -4,7 +4,6 @@ import { CampusSelector } from '../components/CampusSelector';
 import { setDoc } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 
-//TODO: Implement
 export const NewPost = ({navigation}) => {
 
   const addPost = async (post) => {

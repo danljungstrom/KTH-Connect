@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, Pressable, View, Text } from 'react-native';
 import { Feed } from './MainScreens/Feed';
