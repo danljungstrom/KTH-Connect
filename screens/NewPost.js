@@ -21,6 +21,7 @@ export const NewPost = ({navigation}) => {
   const [editingEnd, setEditingEnd] = useState(false)
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
+  const [eventTitle, setEventTitle] = useState()
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -40,7 +41,11 @@ export const NewPost = ({navigation}) => {
       content: postContent,
       creator: currentUser.username
     }
-    addPost(post)
+    if(creatingEvent)
+      addPost({...post, eventInfo: {title: eventTitle, startDate: startDate.toDate(), endDate: endDate.toDate()}})
+    else
+      addPost(post)
+
   }
 
   function onCancel() {
@@ -68,7 +73,9 @@ export const NewPost = ({navigation}) => {
 
         {creatingEvent && <View>
           <TextInput placeholder={"Add event title..."}
-                     placeholderTextColor={colors.lowOpacityText} style={styles.titleText}/>
+                     placeholderTextColor={colors.lowOpacityText}
+                     style={styles.titleText}
+                     onChangeText={setEventTitle}/>
           <View style={styles.datesContainer}>
             <DatePickerButton onPress={startDatePressed} date={startDate} placeholder={"Start Date"} active={editingStart}/>
             <Text style={styles.dateText}>→</Text>

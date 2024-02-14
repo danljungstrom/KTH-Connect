@@ -9,8 +9,9 @@ import { ActionButton } from "./ActionButton";
 import { fetchUserProfile } from '../services/UserAPI';
 import {useNavigation} from "@react-navigation/native";
 import {Comment} from "./Comment";
+import dayjs from "dayjs";
 
-export const Post = ({shownInFeed, post, showLikeButton, showCommentButton, showComments}) => {
+export const Post = ({shownInFeed, post, showLikeButton, showCommentButton, showComments, showAttendButton}) => {
     const navigation = useNavigation()
     const likeCount = post.likes ? post.likes.length : 0
     const commentCount = post.comments ? post.comments.length : 0
@@ -40,6 +41,10 @@ export const Post = ({shownInFeed, post, showLikeButton, showCommentButton, show
             navigation.push("PostScreen", {post})
     }
 
+    function timestampToString(timestamp) {
+        return dayjs.unix(timestamp.seconds).format('YYYY-MM-DD HH:mm')
+    }
+
     return (
         <>
             <Pressable style={shownInFeed ? styles.post : {...styles.post, ...styles.postOnPostPage}}
@@ -55,7 +60,9 @@ export const Post = ({shownInFeed, post, showLikeButton, showCommentButton, show
                         style={styles.image}/>}
                     {post.eventInfo && <Text style={styles.eventTitle}>{post.eventInfo.title}</Text>}
                     {post.eventInfo &&
-                        <Text style={styles.eventDates}>{post.eventInfo.startDate} → {post.eventInfo.endDate}</Text>}
+                        <Text style={styles.eventDates}>
+                            {timestampToString(post.eventInfo.startDate)} → {timestampToString(post.eventInfo.endDate)}
+                        </Text>}
                     <Text style={styles.content}>{post.content}</Text>
                 </View>
 
@@ -66,7 +73,8 @@ export const Post = ({shownInFeed, post, showLikeButton, showCommentButton, show
                         <CommentButton onPress={navigateToPost} count={commentCount}/>}
                 </View>
 
-                {post.eventInfo && <ActionButton onPress={onAttend} text={attending ? 'Attending' : 'Attend'}/>}
+                {post.eventInfo && showAttendButton &&
+                    <ActionButton onPress={onAttend} text={attending ? 'Attending' : 'Attend'}/>}
 
             </Pressable>
 
