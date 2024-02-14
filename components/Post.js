@@ -11,9 +11,10 @@ import {useNavigation} from "@react-navigation/native";
 
 export const Post = ({shownInFeed, post, showLike, showComment}) => {
     const navigation = useNavigation()
-    const [likes, setLikes] = useState(post.likes)
-    const [liked, setLiked] = useState(post.liked)
-    const [attending, setAttending] = useState(post.eventInfo && post.eventInfo.attending)
+    const likeCount = post.likes ? post.likes.length : 0
+    const commentCount = post.comments ? post.comments.length : 0
+    const liked = false
+    const attending = false
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -26,12 +27,11 @@ export const Post = ({shownInFeed, post, showLike, showComment}) => {
       }, [post.creator]);
 
     function onLike() {
-        setLikes(liked ? (likes - 1) : (likes + 1))
-        setLiked(!liked)
+        // TODO add logged in user to post.likes in firebase
     }
 
     function onAttend() {
-        setAttending(!attending)
+        // TODO add logged in user to post.eventInfo.attending in firebase
     }
 
     function navigateToPost() {
@@ -59,9 +59,9 @@ export const Post = ({shownInFeed, post, showLike, showComment}) => {
 
         <View style={styles.buttonContainer}>
             {!post.eventInfo && showLike &&
-                <LikeButton onPress={onLike} count={likes} liked={liked}/>}
+                <LikeButton onPress={onLike} count={likeCount} liked={liked}/>}
             {!post.eventInfo && showComment &&
-                <CommentButton onPress={navigateToPost} count={post.comments}/>}
+                <CommentButton onPress={navigateToPost} count={commentCount}/>}
         </View>
 
         {post.eventInfo && <ActionButton onPress={onAttend} text={attending ? 'Attending' : 'Attend'}/>}
