@@ -44,24 +44,24 @@ export const NewPost = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.postTypeMenu}>
-        <Pressable onPress={() => setCreatingEvent(false)}>
-          <Text style={{...styles.postTypeChoice, ...(creatingEvent ? {} : styles.activePostTypeChoice)}}>
-            Text
-          </Text>
-        </Pressable>
-        <Pressable onPress={() => setCreatingEvent(true)}>
-          <Text style={{...styles.postTypeChoice, ...(creatingEvent ? styles.activePostTypeChoice : {})}}>
-            Event
-          </Text>
-        </Pressable>
-      </View>
+
+      <PostTypeMenu creatingEvent={creatingEvent} setCreatingEvent={setCreatingEvent}/>
 
       <View style={styles.postContainer}>
         {user && <Author user={user}/>}
 
+        {creatingEvent && <View>
+          <TextInput placeholder={"Add event title..."}
+                     placeholderTextColor={colors.lowOpacityText} style={styles.titleText}/>
+          <View style={styles.datesContainer}>
+            <TextInput placeholder="Start" style={styles.dates} placeholderTextColor={colors.lowOpacityText}/>
+            <Text style={styles.dates}>→</Text>
+            <TextInput placeholder="End" style={styles.dates} placeholderTextColor={colors.lowOpacityText}/>
+          </View>
+        </View>}
+
         <TextInput multiline
-                   placeholder="Write your post..."
+                   placeholder={creatingEvent ? "Edit event description..." : "Write your post..."}
                    placeholderTextColor={colors.lowOpacityText}
                    numberOfLines={10}
                    style={styles.postInput}
@@ -77,6 +77,23 @@ export const NewPost = ({navigation}) => {
       <CampusSelector bottom={ true } />
     </View>
   );
+}
+
+const PostTypeMenu = ({creatingEvent, setCreatingEvent}) => {
+  return(
+      <View style={styles.postTypeMenu}>
+        <Pressable onPress={() => setCreatingEvent(false)}>
+          <Text style={{...styles.postTypeChoice, ...(creatingEvent ? {} : styles.activePostTypeChoice)}}>
+            Text
+          </Text>
+        </Pressable>
+        <Pressable onPress={() => setCreatingEvent(true)}>
+          <Text style={{...styles.postTypeChoice, ...(creatingEvent ? styles.activePostTypeChoice : {})}}>
+            Event
+          </Text>
+        </Pressable>
+      </View>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -119,5 +136,17 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     gap: 10
+  },
+  titleText: {
+    color: colors.text,
+    fontSize: 30
+  },
+  dates: {
+    color: colors.text,
+  },
+  datesContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    gap:10
   }
 });
