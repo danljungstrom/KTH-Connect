@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, Dimensions, Pressable} from 'react-native';
 import { LikeButton } from './LikeButton';
 import { CommentButton } from './CommentButton';
-import { PostAuthor } from './PostAuthor';
+import { Author } from './Author';
 import { ResizableImage } from './ResizableImage';
 import { colors } from "../assets/colors";
 import { ActionButton } from "./ActionButton";
 import { fetchUserProfile } from '../services/UserAPI';
+import {useNavigation} from "@react-navigation/native";
 
-export const Post = ({post, showLike, showComment}) => {
-
+export const Post = ({shownInFeed, post, showLike, showComment}) => {
+    const navigation = useNavigation()
     const [likes, setLikes] = useState(post.likes)
     const [liked, setLiked] = useState(post.liked)
     const [attending, setAttending] = useState(post.eventInfo && post.eventInfo.attending)
@@ -20,7 +21,7 @@ export const Post = ({post, showLike, showComment}) => {
           const userData = await fetchUserProfile(post.creator);
           setUser(userData);
         };
-        
+
         fetchUserData();
       }, [post.creator]);
 
@@ -34,16 +35,18 @@ export const Post = ({post, showLike, showComment}) => {
     }
 
     function navigateToPost() {
-        console.log("navigate to comments")
+        if(shownInFeed)
+            navigation.push("PostScreen", {post})
     }
 
     return (
-    <View style={styles.post}>
+    <Pressable style={shownInFeed ? styles.post : {...styles.post, ...styles.postOnPostPage}}
+               onPress={navigateToPost}>
 
-        {user && <PostAuthor name={user.givenName + " " + user.familyName} image={user.image}/>}
+        {user && <Author user={user}/>}
 
         <View style={styles.contentContainer}>
-            {post.image && 
+            {post.image &&
             <ResizableImage
                 image={post.image}
                 width={Dimensions.get('window').width}
@@ -61,8 +64,8 @@ export const Post = ({post, showLike, showComment}) => {
                 <CommentButton onPress={navigateToPost} count={post.comments}/>}
         </View>
 
-        {post.eventInfo && <ActionButton onPress={onAttend} text={attending ? 'Attending' : 'Attend'}/>}       
-    </View>
+        {post.eventInfo && <ActionButton onPress={onAttend} text={attending ? 'Attending' : 'Attend'}/>}
+    </Pressable>
     );
 }
 
@@ -75,6 +78,9 @@ const styles = StyleSheet.create({
         borderColor: colors.border,
         borderTopWidth: 1,
         rowGap:15
+    },
+    postOnPostPage: {
+        borderBottomWidth:1
     },
     contentContainer: {
         flexDirection:'column',
