@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, Pressable, TextInput} from 'react-native';
 import { CampusSelector } from '../components/CampusSelector';
 import { setDoc } from 'firebase/firestore';
@@ -7,12 +7,23 @@ import {useUser} from "../services/UserProvider";
 import {colors} from "../assets/colors";
 import {Author} from "../components/Author";
 import {ActionButton} from "../components/ActionButton";
+import {fetchUserProfile} from "../services/UserAPI";
 
 export const NewPost = ({navigation}) => {
 
-  const user = useUser()
+  const {currentUser} = useUser()
   const [creatingEvent, setCreatingEvent] = useState(false)
   const [postContent, setPostContent] = useState('')
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userData = await fetchUserProfile(currentUser.username);
+      setUser(userData);
+    };
+
+    fetchUserData();
+  }, []);
 
   const addPost = async (post) => {
     console.log(post.id)
@@ -59,7 +70,7 @@ export const NewPost = ({navigation}) => {
       </View>
 
       <View style={styles.postContainer}>
-        <Author user={user}/>
+        {user && <Author user={user}/>}
 
         <TextInput multiline
                    placeholder="Write your post..."
