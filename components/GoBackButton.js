@@ -1,15 +1,15 @@
 import React from "react";
-import {Text, TouchableOpacity} from "react-native-web";
-import {StyleSheet} from "react-native";
+import {Text} from "react-native-web";
+import {Pressable, StyleSheet} from "react-native";
 import {colors} from "../assets/colors";
 
 export const GoBackButton = ({navigation}) => {
     return(
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.container}>
+        <Pressable onPress={() => navigation.goBack()} style={styles.container}>
             <Text style={styles.text}>
                 Go back
             </Text>
-        </TouchableOpacity>
+        </Pressable>
     )
 }
 

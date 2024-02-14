@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Dimensions } from 'react-native';
+import {StyleSheet, View, Text, Dimensions, Pressable} from 'react-native';
 import { LikeButton } from './LikeButton';
 import { CommentButton } from './CommentButton';
 import { Author } from './Author';
@@ -28,7 +28,7 @@ export const Post = ({navigation, link, post, showLike, showComment}) => {
     }
 
     return (
-    <View style={styles.post} onPress={navigateToPost}>
+    <Pressable style={styles.post} onPress={navigateToPost}>
 
         <Author name={post.user.name}/>
 
@@ -53,7 +53,7 @@ export const Post = ({navigation, link, post, showLike, showComment}) => {
 
         {post.eventInfo && <ActionButton onPress={onAttend} text={attending ? 'Attending' : 'Attend'}/>}
         
-    </View>
+    </Pressable>
     );
 }
 
