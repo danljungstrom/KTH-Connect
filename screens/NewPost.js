@@ -8,6 +8,8 @@ import {colors} from "../assets/colors";
 import {Author} from "../components/Author";
 import {ActionButton} from "../components/ActionButton";
 import {fetchUserProfile} from "../services/UserAPI";
+import DateTimePicker from "react-native-ui-datepicker/src/DateTimePicker";
+import dayjs from "dayjs";
 
 export const NewPost = ({navigation}) => {
 
@@ -15,6 +17,10 @@ export const NewPost = ({navigation}) => {
   const [creatingEvent, setCreatingEvent] = useState(false)
   const [postContent, setPostContent] = useState('')
   const [user, setUser] = useState(null);
+  const [editingStart, setEditingStart] = useState(false)
+  const [editingEnd, setEditingEnd] = useState(false)
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,6 +48,16 @@ export const NewPost = ({navigation}) => {
     navigation.goBack()
   }
 
+  function startDatePressed() {
+    setEditingStart(!editingStart)
+    setEditingEnd(false)
+  }
+
+  function endDatePressed() {
+    setEditingEnd(!editingEnd)
+    setEditingStart(false)
+  }
+
   return (
     <View style={styles.container}>
 
@@ -54,9 +70,13 @@ export const NewPost = ({navigation}) => {
           <TextInput placeholder={"Add event title..."}
                      placeholderTextColor={colors.lowOpacityText} style={styles.titleText}/>
           <View style={styles.datesContainer}>
-            <TextInput placeholder="Start" style={styles.dates} placeholderTextColor={colors.lowOpacityText}/>
-            <Text style={styles.dates}>→</Text>
-            <TextInput placeholder="End" style={styles.dates} placeholderTextColor={colors.lowOpacityText}/>
+            <DatePickerButton onPress={startDatePressed} date={startDate} placeholder={"Start Date"} active={editingStart}/>
+            <Text style={styles.dateText}>→</Text>
+            <DatePickerButton onPress={endDatePressed} date={endDate} placeholder={"End Date"} active={editingEnd}/>
+          </View>
+          <View>
+            {editingStart && <DatePicker date={startDate} setDate={setStartDate} title="Set Start Date"/>}
+            {editingEnd && <DatePicker date={endDate} setDate={setEndDate} title="Set End Date"/>}
           </View>
         </View>}
 
@@ -96,12 +116,31 @@ const PostTypeMenu = ({creatingEvent, setCreatingEvent}) => {
   )
 }
 
+const DatePickerButton = ({onPress, date, placeholder, active}) => {
+  return (<Pressable onPress={onPress} style={{...styles.dateTextContainer, ...(active ? styles.selectedDate : {})}}>
+    <Text style={styles.dateText}>
+      { date ? date.format('YYYY-MM-DD HH:mm') : placeholder }
+    </Text>
+  </Pressable>)
+}
+
+const DatePicker = ({date, setDate}) => {
+  return(
+      <>
+        <View style={styles.datePickerContainer}>
+          <DateTimePicker
+            mode="single"
+            date={date ? date : dayjs()}
+            onChange={(params) => setDate(dayjs(params.date))} timePicker={true}
+            minDate={dayjs().subtract(1, 'day')}
+            firstDayOfWeek={1}
+          />
+        </View>
+      </>
+  )
+}
+
 const styles = StyleSheet.create({
-  text: {
-    fontSize: 20,
-    color: colors.accentText,
-    margin: 30,
-  },
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -141,12 +180,28 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 30
   },
-  dates: {
+  dateText: {
     color: colors.text,
   },
   datesContainer: {
     flexDirection: 'row',
     width: '100%',
-    gap:10
+    gap:10,
+    alignItems: 'center'
+  },
+  datePickerContainer: {
+    marginHorizontal:25,
+    marginVertical:7,
+    paddingHorizontal:30,
+    paddingVertical:15,
+    backgroundColor: colors.accentText,
+    borderRadius:10
+  },
+  selectedDate: {
+    backgroundColor: colors.accent
+  },
+  dateTextContainer: {
+    padding:5,
+    borderRadius:7
   }
 });
