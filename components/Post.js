@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, Dimensions } from 'react-native';
 import { LikeButton } from './LikeButton';
 import { CommentButton } from './CommentButton';
-import { PostAuthor } from './PostAuthor';
+import { Author } from './Author';
 import { ResizableImage } from './ResizableImage';
 import {colors} from "../assets/colors";
 import {ActionButton} from "./ActionButton";
@@ -30,7 +30,7 @@ export const Post = ({navigation, link, post, showLike, showComment}) => {
     return (
     <View style={styles.post} onPress={navigateToPost}>
 
-        <PostAuthor name={post.user.name}/>
+        <Author name={post.user.name}/>
 
         <View style={styles.contentContainer}>
             {post.image && 

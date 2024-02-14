@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 
-export const PostAuthor = ({name}) => {
+export const Author = ({name}) => {
     return (
         <View style={styles.user}>
             <Image style={styles.avatar} source={require('../assets/blank-profile.png')} />
