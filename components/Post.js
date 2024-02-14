@@ -7,7 +7,7 @@ import { ResizableImage } from './ResizableImage';
 import {colors} from "../assets/colors";
 import {ActionButton} from "./ActionButton";
 
-export const Post = ({post, showLike, showComment}) => {
+export const Post = ({navigation, link, post, showLike, showComment}) => {
 
     const [likes, setLikes] = React.useState(post.likes)
     const [liked, setLiked] = React.useState(post.liked)
@@ -23,11 +23,12 @@ export const Post = ({post, showLike, showComment}) => {
     }
 
     function navigateToPost() {
-        console.log("navigate to comments")
+        if(link)
+            navigation.push("PostScreen", {post})
     }
 
     return (
-    <View style={styles.post}>
+    <View style={styles.post} onPress={navigateToPost}>
 
         <PostAuthor name={post.user.name}/>
 

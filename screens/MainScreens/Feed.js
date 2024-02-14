@@ -50,7 +50,9 @@ export const Feed = ({navigation}) => {
   return (
     <ScrollView style={styles.container}>
       {posts.map(post =>
-        <Post 
+        <Post
+          navigation={navigation}
+          link={true}
           key={post.id}
           post={post}
           showLike={true}
