@@ -4,5 +4,6 @@ export const colors = {
     accent: '#132E49',
     text: '#ffffff',
     lowOpacityText: '#5f84b0',
-    border: '#1E364E'
+    border: '#1E364E',
+    accentText: 'rgba(123, 163, 191, 1)'
 }

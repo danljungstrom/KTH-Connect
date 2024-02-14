@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, Pressable, TextInput} from 'react-native';
 import { CampusSelector } from '../components/CampusSelector';
-import { setDoc } from 'firebase/firestore';
+import {addDoc, collection} from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 import {useUser} from "../services/UserProvider";
 import {colors} from "../assets/colors";
@@ -25,28 +25,16 @@ export const NewPost = ({navigation}) => {
     fetchUserData();
   }, []);
 
-  const addPost = async (post) => {
-    console.log(post.id)
-    const postRef = doc(db, 'Posts', post.id.toString());
-
-    try {
-      await setDoc(postRef, {
-        id: post.id,
-        creator: post.creator,
-        content: post.content,
-        comments: post.comments,
-        likes: post.likes,
-        liked: null,
-        image: post.image,
-        eventInfo: post.eventInfo,
-      });
-    } catch (error) {
-      console.error("Error adding document: ", error);
-    }
+  function addPost(post) {
+    addDoc(collection(db, "Posts"), post).then(() => {navigation.push('PostConfirmation', {post})})
   }
 
   function onPost() {
-
+    const post = {
+      content: postContent,
+      creator: currentUser.username
+    }
+    addPost(post)
   }
 
   function onCancel() {
@@ -94,12 +82,12 @@ export const NewPost = ({navigation}) => {
 const styles = StyleSheet.create({
   text: {
     fontSize: 20,
-    color: 'rgba(123, 163, 191, 1)',
+    color: colors.accentText,
     margin: 30,
   },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(1, 25, 52, 1)',
+    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingVertical: 50
