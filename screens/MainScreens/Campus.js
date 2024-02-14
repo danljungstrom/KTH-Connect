@@ -5,6 +5,17 @@ import { useCampus } from '../../services/CampusProvider';
 export const Campus = () => {
   const { selectedCampus } = useCampus();
 
+  const localMaps =[
+    require('../../assets/exMapFlemingsberg.png'),
+    require('../../assets/exMapKista.png'),
+    require('../../assets/exMapSolna.png'),
+    require('../../assets/exMapSödertälje.png'),
+    require('../../assets/exMapMainCampus.png'),
+  ]
+
+
+
+
   return (
     <View style={styles.container}>
 
@@ -31,8 +42,9 @@ export const Campus = () => {
         <Text style={styles.data}>{selectedCampus.email}</Text>
 
       </View>
-      <Image style={styles.mapPicture} source={require('../../assets/exMapKista.png')} />
-          
+      
+      <Image style={styles.mapPicture} source={localMaps[selectedCampus.id - 1]} />
+      
 
     </View>
   );
@@ -51,7 +63,8 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 1)',
     alignSelf: 'flex-start',
     marginLeft: 15,
-    marginBottom: 10
+    marginBottom: 10,
+    marginTop: 20
   },
   title: {
     fontSize: 14,
@@ -66,7 +79,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 1)',
     alignSelf: 'flex-start',
     paddingTop: 5,
-    width: 300
+    width: 300 // TODO: Fix this
   },
   dataRow: {
     flexDirection: 'row',
