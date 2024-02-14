@@ -48,7 +48,7 @@ export const PostScreen = ({route, navigation}) => {
             <GoBackButton navigation={navigation}/>
             <Post
                 navigation={navigation}
-                link={false}
+                shownInFeed={false}
                 key={post.id}
                 post={post}
                 showLike={true}

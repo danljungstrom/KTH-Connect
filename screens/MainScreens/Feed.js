@@ -52,7 +52,7 @@ export const Feed = ({navigation}) => {
       {posts.map(post =>
         <Post
           navigation={navigation}
-          link={true}
+          shownInFeed={true}
           key={post.id}
           post={post}
           showLike={true}

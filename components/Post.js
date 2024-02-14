@@ -7,7 +7,7 @@ import { ResizableImage } from './ResizableImage';
 import {colors} from "../assets/colors";
 import {ActionButton} from "./ActionButton";
 
-export const Post = ({navigation, link, post, showLike, showComment}) => {
+export const Post = ({navigation, shownInFeed, post, showLike, showComment}) => {
 
     const [likes, setLikes] = React.useState(post.likes)
     const [liked, setLiked] = React.useState(post.liked)
@@ -23,12 +23,13 @@ export const Post = ({navigation, link, post, showLike, showComment}) => {
     }
 
     function navigateToPost() {
-        if(link)
+        if(shownInFeed)
             navigation.push("PostScreen", {post})
     }
 
     return (
-    <Pressable style={styles.post} onPress={navigateToPost}>
+    <Pressable style={shownInFeed ? styles.post : {...styles.post, ...styles.postOnPostPage}}
+               onPress={navigateToPost}>
 
         <Author name={post.user.name}/>
 
@@ -66,6 +67,9 @@ const styles = StyleSheet.create({
         borderColor: colors.border,
         borderTopWidth: 1,
         rowGap:15
+    },
+    postOnPostPage: {
+        borderBottomWidth:1
     },
     contentContainer: {
         flexDirection:'column',
