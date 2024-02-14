@@ -2,6 +2,7 @@ import React from "react";
 import {ScrollView, StyleSheet} from "react-native";
 import {colors} from "../assets/colors";
 import {Post} from "../components/Post";
+import {GoBackButton} from "../components/GoBackButton";
 
 export const PostScreen = ({route, navigation}) => {
 
@@ -36,6 +37,7 @@ export const PostScreen = ({route, navigation}) => {
 
     return (
         <ScrollView style={styles.container}>
+            <GoBackButton navigation={navigation}/>
             <Post
                 navigation={navigation}
                 link={false}
