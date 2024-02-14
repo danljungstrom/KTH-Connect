@@ -32,8 +32,8 @@ export const Feed = () => {
           shownInFeed={true}
           key={post.id}
           post={post}
-          showLike={true}
-          showComment={true}
+          showLikeButton={true}
+          showCommentButton={true}
         />)}
     </ScrollView>
   );
