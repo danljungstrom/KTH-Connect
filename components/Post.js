@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, Dimensions, Pressable} from 'react-native';
 import { LikeButton } from './LikeButton';
 import { CommentButton } from './CommentButton';
-import { PostAuthor } from './PostAuthor';
+import { Author } from './Author';
 import { ResizableImage } from './ResizableImage';
 import { colors } from "../assets/colors";
 import { ActionButton } from "./ActionButton";
 import { fetchUserProfile } from '../services/UserAPI';
+import {useNavigation} from "@react-navigation/native";
+import {Comment} from "./Comment";
+import dayjs from "dayjs";
 
-export const Post = ({post, showLike, showComment}) => {
-
-    const [likes, setLikes] = useState(post.likes)
-    const [liked, setLiked] = useState(post.liked)
-    const [attending, setAttending] = useState(post.eventInfo && post.eventInfo.attending)
+export const Post = ({shownInFeed, post, showLikeButton, showCommentButton, showComments, showAttendButton}) => {
+    const navigation = useNavigation()
+    const likeCount = post.likes ? post.likes.length : 0
+    const commentCount = post.comments ? post.comments.length : 0
+    const liked = false
+    const attending = false
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -20,49 +24,64 @@ export const Post = ({post, showLike, showComment}) => {
           const userData = await fetchUserProfile(post.creator);
           setUser(userData);
         };
-        
+
         fetchUserData();
       }, [post.creator]);
 
     function onLike() {
-        setLikes(liked ? (likes - 1) : (likes + 1))
-        setLiked(!liked)
+        // TODO add logged in user to post.likes in firebase
     }
 
     function onAttend() {
-        setAttending(!attending)
+        // TODO add logged in user to post.eventInfo.attending in firebase
     }
 
     function navigateToPost() {
-        console.log("navigate to comments")
+        if(shownInFeed)
+            navigation.push("PostScreen", {post})
+    }
+
+    function timestampToString(timestamp) {
+        return dayjs.unix(timestamp.seconds).format('YYYY-MM-DD HH:mm')
     }
 
     return (
-    <View style={styles.post}>
+        <>
+            <Pressable style={shownInFeed ? styles.post : {...styles.post, ...styles.postOnPostPage}}
+                       onPress={navigateToPost}>
 
-        {user && <PostAuthor name={user.givenName + " " + user.familyName} image={user.image}/>}
+                {user && <Author user={user}/>}
 
-        <View style={styles.contentContainer}>
-            {post.image && 
-            <ResizableImage
-                image={post.image}
-                width={Dimensions.get('window').width}
-                style={styles.image}/>}
-            {post.eventInfo && <Text style={styles.eventTitle}>{post.eventInfo.title}</Text>}
-            {post.eventInfo &&
-                <Text style={styles.eventDates}>{post.eventInfo.startDate} → {post.eventInfo.endDate}</Text>}
-            <Text style={styles.content}>{post.content}</Text>
-        </View>
+                <View style={styles.contentContainer}>
+                    {post.image &&
+                    <ResizableImage
+                        image={post.image}
+                        width={Dimensions.get('window').width}
+                        style={styles.image}/>}
+                    {post.eventInfo && <Text style={styles.eventTitle}>{post.eventInfo.title}</Text>}
+                    {post.eventInfo &&
+                        <Text style={styles.eventDates}>
+                            {timestampToString(post.eventInfo.startDate)} → {timestampToString(post.eventInfo.endDate)}
+                        </Text>}
+                    <Text style={styles.content}>{post.content}</Text>
+                </View>
 
-        <View style={styles.buttonContainer}>
-            {!post.eventInfo && showLike &&
-                <LikeButton onPress={onLike} count={likes} liked={liked}/>}
-            {!post.eventInfo && showComment &&
-                <CommentButton onPress={navigateToPost} count={post.comments}/>}
-        </View>
+                <View style={styles.buttonContainer}>
+                    {!post.eventInfo && showLikeButton &&
+                        <LikeButton onPress={onLike} count={likeCount} liked={liked}/>}
+                    {!post.eventInfo && showCommentButton &&
+                        <CommentButton onPress={navigateToPost} count={commentCount}/>}
+                </View>
 
-        {post.eventInfo && <ActionButton onPress={onAttend} text={attending ? 'Attending' : 'Attend'}/>}       
-    </View>
+                {post.eventInfo && showAttendButton &&
+                    <ActionButton onPress={onAttend} text={attending ? 'Attending' : 'Attend'}/>}
+
+            </Pressable>
+
+            {showComments && post.comments &&  <View style={styles.commentContainer}>
+                {post.comments.map((comment, index) => <Comment comment={comment} key={"comment" + index}/> )}
+            </View>}
+        </>
     );
 }
 
@@ -75,6 +94,9 @@ const styles = StyleSheet.create({
         borderColor: colors.border,
         borderTopWidth: 1,
         rowGap:15
+    },
+    postOnPostPage: {
+        borderBottomWidth:1
     },
     contentContainer: {
         flexDirection:'column',
@@ -100,4 +122,7 @@ const styles = StyleSheet.create({
     eventDates: {
         color: colors.text,
     },
+    commentContainer: {
+        margin:5,
+    }
 });

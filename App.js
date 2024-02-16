@@ -4,9 +4,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Login } from './screens/Login';
 import { ChooseCampus } from './screens/ChooseCampus';
-import { Chat } from './screens/Chat';
 import { NewPost } from './screens/NewPost';
 import { Main } from './screens/Main';  
+import { PostScreen } from "./screens/PostScreen";
+import { PostConfirmation } from "./screens/PostConfirmation";
+import { Conversation } from './screens/Conversation';
 import { UserProvider } from './services/UserProvider';
 import { CampusProvider } from './services/CampusProvider';
 
@@ -18,12 +20,14 @@ export default function App() {
     <UserProvider>
       <CampusProvider>
         <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
-            <Stack.Screen name="ChooseCampus" component={ChooseCampus} options={{ headerShown: false }}/>
-            <Stack.Screen name="Main" component={Main} options={{ headerShown: false }}/>
-            <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }}/>
-            <Stack.Screen name="NewPost" component={NewPost} options={{ headerShown: false }}/>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Login" component={Login}/>
+            <Stack.Screen name="ChooseCampus" component={ChooseCampus}/>
+            <Stack.Screen name="Main" component={Main}/>
+            <Stack.Screen name="NewPost" component={NewPost}/>
+            <Stack.Screen name="Conversation" component={Conversation}/>
+            <Stack.Screen name="PostScreen" component={PostScreen}/>
+            <Stack.Screen name="PostConfirmation" component={PostConfirmation}/>
           </Stack.Navigator>
         </NavigationContainer>
       </CampusProvider>

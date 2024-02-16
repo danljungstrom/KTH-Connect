@@ -28,11 +28,12 @@ export const Feed = () => {
   return (
     <ScrollView style={styles.container}>
       {posts.map(post =>
-        <Post 
+        <Post
+          shownInFeed={true}
           key={post.id}
           post={post}
-          showLike={true}
-          showComment={true}
+          showLikeButton={true}
+          showCommentButton={true}
         />)}
     </ScrollView>
   );
@@ -41,6 +42,7 @@ export const Feed = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.background,
-    paddingBottom: 10
+    paddingBottom: 10,
+    paddingTop: 30
   },
 });
