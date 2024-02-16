@@ -1,13 +1,13 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, Pressable, View, Text } from 'react-native';
+import { colors } from '../assets/colors';
 import { Feed } from './MainScreens/Feed';
 import { Campus } from './MainScreens/Campus';
 import { Profile } from './MainScreens/Profile';
 import { Chat } from './MainScreens/Chat';
 import { CampusSelector} from '../components/CampusSelector';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useCampus } from '../services/CampusProvider';
 
 //Screen names
 const feedName = 'Feed';
@@ -23,7 +23,7 @@ const NavButton = ({ iconName, label, onPress }) => {
       <Pressable onPress={onPress}>
         <MaterialCommunityIcons 
           name={iconName} 
-          color='white' 
+          color={colors.icons}
           size={label === newPostName ? 40 : 30}
           margin-top={label === newPostName ? -5 : 0}
           margin-bottom={label === newPostName ? -5 : 0}
@@ -41,7 +41,6 @@ const DummyComponent = () => {
 
 //Navbar
 export const Main = ({navigation}) => {
-  const { selectedCampus } = useCampus();
   const Tab = createBottomTabNavigator();
 
   return (
@@ -60,29 +59,33 @@ export const Main = ({navigation}) => {
             else if(rn === campusName){
               icon = focused ? 'map-marker' : 'map-marker-outline';
             }
+            else if(rn === chatName) {
+              icon = focused ? 'chat' : 'chat-outline'
+            }
             else if(rn === profileName) {
               icon = focused ? 'account-circle' : 'account-circle-outline'
             }
 
-            return <MaterialCommunityIcons name={ icon } color='white' size={30}/>
+            return <MaterialCommunityIcons name={ icon } color={colors.icons} size={30}/>
           },
-          tabBarActiveTintColor: 'white',
-          tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.6)',
+          tabBarActiveTintColor: colors.navTextFocus,
+          tabBarInactiveTintColor: colors.navText,
           tabBarLabelStyle: { fontSize: 12, marginBottom: 5 },
           tabBarStyle: {
-            backgroundColor: 'rgba(1, 25, 52, 1)',
-            borderTopColor: '#0A2D4B',
+            backgroundColor: colors.background,
+            borderTopColor: colors.navBorder,
             borderTopWidth: 1,
             height: 70,
             paddingTop: 5,
             paddingBottom: 5,
           },
+          headerShown: false
         })}
         
         >
 
-        <Tab.Screen name={feedName} component={Feed} options={{ headerShown: false }}/>
-        <Tab.Screen name={campusName} component={Campus} options={{ headerShown: false }}/>
+        <Tab.Screen name={feedName} component={Feed}/>
+        <Tab.Screen name={campusName} component={Campus}/>
         <Tab.Screen
           name="NewPost"
           component={DummyComponent}
@@ -92,14 +95,8 @@ export const Main = ({navigation}) => {
             )
           }}
         />
-        <Tab.Screen name={chatName} component={Chat}
-          options={{
-            tabBarButton: () => (
-              <NavButton iconName="chat-outline" label={chatName} onPress={() => navigation.navigate('Chat')} />
-            )
-          }}
-        />
-        <Tab.Screen name={profileName} component={Profile} options={{ headerShown: false }}/>
+        <Tab.Screen name={chatName} component={Chat}/>
+        <Tab.Screen name={profileName} component={Profile}/>
       </Tab.Navigator>
     </>
   );
@@ -120,12 +117,12 @@ const styles = StyleSheet.create({
     paddingTop: 0,
   },
   navButtonText: {
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: colors.navText,
     fontSize: 12,
     marginTop: 3,
   },
   navPostButtonText:{
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: colors.navText,
     fontSize: 12,
     marginTop: -1,
   },

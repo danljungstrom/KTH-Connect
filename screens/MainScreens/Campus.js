@@ -13,12 +13,8 @@ export const Campus = () => {
     require('../../assets/exMapMainCampus.png'),
   ]
 
-
-
-
   return (
     <View style={styles.container}>
-
       <Text style={styles.headerText}>{selectedCampus.name}</Text>
 
       <View style={styles.dataRow}>
@@ -37,15 +33,11 @@ export const Campus = () => {
       </View>
 
       <View style={styles.dataRow}>
-
         <Text style={styles.title}>Email: </Text>
         <Text style={styles.data}>{selectedCampus.email}</Text>
-
       </View>
       
       <Image style={styles.mapPicture} source={localMaps[selectedCampus.id - 1]} />
-      
-
     </View>
   );
 }

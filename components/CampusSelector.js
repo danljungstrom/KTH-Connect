@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Text, TouchableOpacity, View, FlatList, StyleSheet, Dimensions } from 'react-native';
+import { colors } from '../assets/colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useCampus } from '../services/CampusProvider';
 
@@ -33,7 +34,7 @@ export const CampusSelector = ({ bottom }) => {
         <MaterialCommunityIcons
           name='chevron-up' 
           size={24}
-          color="white"
+          color={colors.icons}
         />
       </TouchableOpacity>
 
@@ -57,7 +58,7 @@ export const CampusSelector = ({ bottom }) => {
                   <MaterialCommunityIcons
                     name="chevron-down" 
                     size={24}
-                    color="white"
+                    color={colors.icons}
                     style={styles.downButton}
                   />
                 </TouchableOpacity>
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     bottom: 69,
     width: 170,
     alignSelf: 'center',
-    backgroundColor: '#132E49',
+    backgroundColor: colors.selectorBackground,
     zIndex: 1,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   campusText: {
-    color: 'white',
+    color: colors.text,
   },
   modalOverlay: {
     flex: 1,
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
   modalView: {
     width: 170,
     alignSelf: 'center',
-    backgroundColor: '#132E49',
+    backgroundColor: colors.selectorBackground,
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
     padding: 2,
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
   item: {
     padding: 5,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.2)',
+    borderTopColor: colors.selectorLines,
   },
   itemHeader: {
     flexDirection: 'row',
@@ -124,14 +125,14 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 14,
-    color: 'white',
+    color: colors.text,
   },
   selectedCampusText: {
     fontWeight: 'bold',
   },
   campusText:{
     fontWeight: 'bold',
-    color: 'white',
+    color: colors.text,
   },  
   downButton: {
     paddingBottom: 5,
