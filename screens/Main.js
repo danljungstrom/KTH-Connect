@@ -4,6 +4,7 @@ import { StyleSheet, Pressable, View, Text } from 'react-native';
 import { Feed } from './MainScreens/Feed';
 import { Campus } from './MainScreens/Campus';
 import { Profile } from './MainScreens/Profile';
+import { Chat } from './MainScreens/Chat';
 import { CampusSelector} from '../components/CampusSelector';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useCampus } from '../services/CampusProvider';
@@ -91,9 +92,7 @@ export const Main = ({navigation}) => {
             )
           }}
         />
-        <Tab.Screen
-          name="Chat"
-          component={DummyComponent}
+        <Tab.Screen name={chatName} component={Chat}
           options={{
             tabBarButton: () => (
               <NavButton iconName="chat-outline" label={chatName} onPress={() => navigation.navigate('Chat')} />

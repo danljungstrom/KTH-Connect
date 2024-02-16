@@ -6,10 +6,12 @@ export const Chat = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text} onPress={() => navigation.navigate('Main')}>This page will contain all chats with other students. Click the text to return to the previous page.</Text>
+      <Text style={styles.headerText}>Messages</Text>
+      
     </View>
   );
 }
+//<Text style={styles.text} onPress={() => navigation.navigate('Main')}>This page will contain all chats with other students. Click the text to return to the previous page.</Text>
 
 const styles = StyleSheet.create({
   text: {
