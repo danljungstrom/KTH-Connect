@@ -1,13 +1,30 @@
-import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import React, { useEffect, useState} from 'react';
+import { StyleSheet, View, Text, Image } from 'react-native';
+import { useUser } from '../../services/UserProvider';
+import { fetchUserProfile } from '../../services/UserAPI';
 
 //TODO: Implement
 export const Profile = ({navigation}) => {
+  const { currentUser } = useUser();
+  const [ currentUserProfile, setCurrentUserProfile ] = useState(null);
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userData = await fetchUserProfile(currentUser.username);
+      setCurrentUserProfile(userData);
+    };
+    
+    fetchUserData();
+  }, []);
+     
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>This page will show the users profile and previously posted messages.</Text>
-    </View>
+    <>
+      {currentUserProfile && <View style={styles.container}>
+      <Image style={styles.avatar} source={{uri: currentUserProfile.image}} />
+      <Text style={styles.text}>{currentUserProfile.givenName + " " + currentUserProfile.familyName}</Text>
+      <Text style={styles.text}>{currentUser.username + '@kth.se'}</Text>
+      </View>}
+    </>
   );
 }
 
@@ -23,4 +40,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 100,
+    marginRight: 5,
+    top: 0,
+    left: 0
+},
 });
