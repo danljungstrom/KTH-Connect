@@ -76,6 +76,38 @@ export const Conversation = ({route, navigation}) => {
     }
   };
 
+  const getDayLabel = (date) => {
+    if (!date) return 'Unknown Date';
+
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+  
+    if (date.toDateString() === today.toDateString()) {
+      return 'Today';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return 'Yesterday';
+    } else {
+      return date.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' });
+    }
+  };
+
+  const groupMessagesByDate = (messages) => {
+    const validMessages = messages.filter(m => m.timestamp);
+  
+    const groups = validMessages.reduce((acc, message) => {
+      const date = message.timestamp.toDateString();
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(message);
+      return acc;
+    }, {});
+  
+    const sortedGroups = Object.entries(groups).sort((a, b) => new Date(a[0]) - new Date(b[0]));
+    return sortedGroups;
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
@@ -90,21 +122,28 @@ export const Conversation = ({route, navigation}) => {
         <Image style={styles.userImage} source={{ uri: otherUser.image }} />
       </View>
       <ScrollView style={styles.messagesContainer}>
-      {messages.map(message => (
-      <Pressable key={message.id} style={[
-        styles.messageBubble,
-        message.user === currentUser.username ? styles.outgoingMessage : styles.incomingMessage
-        ]} onLongPress={(event) => handleLongPress(event, message.id)}>
-        <Text style={styles.messageText}>{message.message}</Text>
-        {message.timestamp ?   <Text style={[styles.timestampText, message.user === currentUser.username ? styles.timestampIncText : styles.timestampOutText]}>
-          {message.timestamp.toLocaleTimeString('en-GB', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-          })}
-        </Text> : null}
-      </Pressable>
-      ))}
+        {groupMessagesByDate(messages).map(([dateString, groupedMessages]) => (
+          <View key={dateString}>
+            <Text style={styles.dateHeader}>{getDayLabel(new Date(dateString))}</Text>
+            {groupedMessages.map(message => (
+              message.timestamp && (
+                <Pressable key={message.id} style={[
+                  styles.messageBubble,
+                  message.user === currentUser.username ? styles.outgoingMessage : styles.incomingMessage
+                ]} onLongPress={(event) => handleLongPress(event, message.id)}>
+                  <Text style={styles.messageText}>{message.message}</Text>
+                  <Text style={[styles.timestampText, message.user === currentUser.username ? styles.timestampIncText : styles.timestampOutText]}>
+                    {message.timestamp.toLocaleTimeString('en-GB', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false
+                    })}
+                  </Text>
+                </Pressable>
+              )
+            ))}
+          </View>
+        ))}
       </ScrollView>
       <View style={styles.inputContainer}>
         <TextInput
@@ -193,7 +232,7 @@ const styles = StyleSheet.create({
   },
   messageBubble: {
     padding: 15,
-    margin: 10,
+    margin: 5,
     borderRadius: 10,
   },
   incomingMessage: {
@@ -262,5 +301,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
     padding: 10,
-  }
+  },
+  dateHeader: {
+    alignSelf: 'center',
+    marginVertical: 5,
+    paddingVertical: 2,
+    color: colors.navText,
+    overflow: 'hidden',
+    fontSize: 11,
+  },
 });

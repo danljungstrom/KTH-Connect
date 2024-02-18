@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, Pressable, ScrollView } from 'react-native';
 import { fetchUserProfile } from '../../services/UserAPI';
 import { db } from '../../config/firebaseConfig';
-import { getDocs, collection, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
 import { useUser } from '../../services/UserProvider';
 import { colors } from "../../assets/colors";
 
@@ -82,6 +82,27 @@ export const Chat = ({navigation}) => {
     };
   }, [currentUser.username]);
 
+  const formatDate = (timestamp) => {
+    if (!timestamp) return '';
+
+    const messageDate = timestamp;
+    const currentDate = new Date();
+  
+    const dayDifference = Math.floor((currentDate - messageDate) / (1000 * 60 * 60 * 24));
+
+    if (dayDifference < 1) {
+      return 'Today, ' + messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    } else if (dayDifference === 2) {
+      return 'Yesterday, ' + messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    } else if (dayDifference < 7) {
+      return messageDate.toLocaleDateString('en-US', { weekday: 'long' }) + 
+      ', ' + messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
+    } else {
+      return messageDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' }) + 
+      ', ' + messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+  }
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Messages</Text>
@@ -99,17 +120,16 @@ export const Chat = ({navigation}) => {
             <Text style={styles.name}>{conversation.otherUser.givenName + " " + conversation.otherUser.familyName}</Text>
             {conversation.latestMessage && <Text style={styles.latestMessage}>{conversation.latestMessage.user === currentUser.username ? 'You: ' : conversation.otherUser.givenName + ": "}{conversation.latestMessage.message}</Text>}
           </View>
-          {conversation.latestMessage && <Text style={styles.timestamp}>
-            {conversation.latestMessage.timestamp && 
-            conversation.latestMessage.timestamp.toLocaleDateString('en-US', {
-              month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
-            })}
-          </Text>}
+          {conversation.latestMessage && (
+            <Text style={styles.timestamp}>
+              {formatDate(conversation.latestMessage.timestamp)}
+            </Text>
+          )}
         </Pressable>
       ))}
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   title: {
