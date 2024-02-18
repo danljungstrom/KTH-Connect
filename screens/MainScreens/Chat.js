@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, Pressable, ScrollView } from 'react-native';
 import { fetchUserProfile } from '../../services/UserAPI';
 import { db } from '../../config/firebaseConfig';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { getDocs, collection, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
 import { useUser } from '../../services/UserProvider';
 import { colors } from "../../assets/colors";
 
@@ -14,23 +14,73 @@ export const Chat = ({navigation}) => {
     const conversationsRef = collection(db, 'Conversations');
     const q = query(conversationsRef, where('users', 'array-contains', currentUser.username));
   
-    const unsubscribe = onSnapshot(q, async (querySnapshot) => {
-      const conversationsPromises = querySnapshot.docs.map(async doc => {
-        const otherUsername = doc.data().users.find(username => username !== currentUser.username);
-        const userProfile = await fetchUserProfile(otherUsername);
+    const unsubscribeConversations = onSnapshot(q, async (querySnapshot) => {
+      const profilePromises = [];
+  
+      querySnapshot.forEach((doc) => {
+        const otherUsernames = doc.data().users.filter(username => username !== currentUser.username);
+        otherUsernames.forEach(otherUsername => {
+          profilePromises.push(fetchUserProfile(otherUsername));
+        });
+      });
+  
+      const userProfiles = await Promise.all(profilePromises);
+  
+      let conversationsWithProfiles = querySnapshot.docs.map((doc, index) => {
         return {
           id: doc.id,
-          otherUser: userProfile,
-          latestMessage: doc.data().latestMessage,
+          otherUser: userProfiles[index],
+          latestMessage: null,
         };
       });
   
-      const fetchedConversations = await Promise.all(conversationsPromises);
-      setConversations(fetchedConversations);
+      conversationsWithProfiles.forEach((convo, index) => {
+        const messagesRef = collection(db, 'Conversations', convo.id, 'messages');
+        const lastMessageQuery = query(messagesRef, orderBy('timestamp', 'desc'), limit(1));
+  
+        const unsubscribeMessage = onSnapshot(lastMessageQuery, (messageSnapshot) => {
+          if (!messageSnapshot.empty) {
+            const latestMessageData = messageSnapshot.docs[0].data();
+            setConversations(prevConversations => {
+              const updatedConversations = prevConversations.map(conversation => {
+                if (conversation.id === convo.id) {
+                  return {
+                    ...conversation,
+                    latestMessage: {
+                      ...latestMessageData,
+                      timestamp: latestMessageData.timestamp?.toDate(),
+                    },
+                  };
+                }
+                return conversation;
+              });
+  
+              updatedConversations.sort((a, b) => {
+                const dateA = a.latestMessage?.timestamp || 0;
+                const dateB = b.latestMessage?.timestamp || 0;
+                return dateB - dateA;
+              });
+  
+              return updatedConversations;
+            });
+          }
+        });
+  
+        conversationsWithProfiles[index].unsubscribeMessage = unsubscribeMessage;
+      });
+  
+      setConversations(conversationsWithProfiles);
     });
   
-    return () => unsubscribe();
-  }, [currentUser]);
+    return () => {
+      unsubscribeConversations();
+      conversations.forEach(convo => {
+        if (convo.unsubscribeMessage) {
+          convo.unsubscribeMessage();
+        }
+      });
+    };
+  }, [currentUser.username]);
 
   return (
     <ScrollView style={styles.container}>
@@ -47,8 +97,14 @@ export const Chat = ({navigation}) => {
           />
           <View style={styles.textContainer}>
             <Text style={styles.name}>{conversation.otherUser.givenName + " " + conversation.otherUser.familyName}</Text>
-            <Text style={styles.latestMessage}>{conversation.latestMessage.user === currentUser.username ? 'You: ' : conversation.otherUser.givenName + ": "}{conversation.latestMessage.message}</Text>
+            {conversation.latestMessage && <Text style={styles.latestMessage}>{conversation.latestMessage.user === currentUser.username ? 'You: ' : conversation.otherUser.givenName + ": "}{conversation.latestMessage.message}</Text>}
           </View>
+          {conversation.latestMessage && <Text style={styles.timestamp}>
+            {conversation.latestMessage.timestamp && 
+            conversation.latestMessage.timestamp.toLocaleDateString('en-US', {
+              month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
+            })}
+          </Text>}
         </Pressable>
       ))}
     </ScrollView>
@@ -72,6 +128,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 20,
     paddingBottom: 20,
+    marginTop: -1,
     alignItems: 'center',
     borderTopColor: colors.accent,
     borderTopWidth: 1,
@@ -100,4 +157,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.lowOpacityText,
   },
+  timestamp: {
+    marginRight: 5,
+    fontSize: 10,
+    color: colors.lowOpacityText,
+  }
 });

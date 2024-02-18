@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, ScrollView, TextInput, Pressable, Image } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TextInput, Pressable, Image, Modal } from 'react-native';
 import { useUser } from '../services/UserProvider';
 import { colors } from '../assets/colors';
 import { db } from '../config/firebaseConfig';
-import { doc, updateDoc, query, onSnapshot, collection, addDoc, serverTimestamp, orderBy } from 'firebase/firestore';
+import { doc, deleteDoc, query, onSnapshot, collection, addDoc, serverTimestamp, orderBy } from 'firebase/firestore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export const Conversation = ({route, navigation}) => {
-  const { conversationId, otherUser } = route.params;
-  const { currentUser } = useUser();
+  const {conversationId, otherUser} = route.params;
+  const {currentUser} = useUser();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedMessageId, setSelectedMessageId] = useState(null);
+  const [longPressCoords, setLongPressCoords] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const messagesRef = collection(db, 'Conversations', conversationId, 'messages');
@@ -37,23 +40,40 @@ export const Conversation = ({route, navigation}) => {
   const sendMessage = async () => {
     if (newMessage.trim() === '') return;
     
-    const newMessageObject = {
+    const messagesRef = collection(db, 'Conversations', conversationId, 'messages');
+    
+    await addDoc(messagesRef, {
       user: currentUser.username,
       message: newMessage,
       timestamp: serverTimestamp(),
-    };
-    
-    const messagesRef = collection(db, 'Conversations', conversationId, 'messages');
-    
-    await addDoc(messagesRef, newMessageObject);
-  
-    const conversationRef = doc(db, 'Conversations', conversationId);
-    
-    await updateDoc(conversationRef, {
-      latestMessage: newMessageObject
     });
   
     setNewMessage('');
+  };
+
+  const handleLongPress = (event, messageId) => {
+    message = messages.find(message => message.id === messageId);
+    if (message.user === currentUser.username) {
+      const { locationX, locationY } = event.nativeEvent;
+      setLongPressCoords({ x: locationX, y: locationY });
+      setSelectedMessageId(messageId);
+      setModalVisible(true);
+    }
+  };
+  
+  const deleteMessage = async (messageId) => {
+    const messageToDelete = messages.find(message => message.id === messageId && message.user === currentUser.username);
+    
+    if (messageToDelete) {
+      const messageRef = doc(db, 'Conversations', conversationId, 'messages', messageId);
+      try {
+        await deleteDoc(messageRef);
+      } catch (error) {
+        console.error("Error deleting message: ", error);
+      }
+    } else {
+      console.error("Message not found or not authorized to delete it.");
+    }
   };
 
   return (
@@ -71,10 +91,10 @@ export const Conversation = ({route, navigation}) => {
       </View>
       <ScrollView style={styles.messagesContainer}>
       {messages.map(message => (
-      <View key={message.id} style={[
+      <Pressable key={message.id} style={[
         styles.messageBubble,
         message.user === currentUser.username ? styles.outgoingMessage : styles.incomingMessage
-        ]}>
+        ]} onLongPress={(event) => handleLongPress(event, message.id)}>
         <Text style={styles.messageText}>{message.message}</Text>
         {message.timestamp ?   <Text style={[styles.timestampText, message.user === currentUser.username ? styles.timestampIncText : styles.timestampOutText]}>
           {message.timestamp.toLocaleTimeString('en-GB', {
@@ -83,7 +103,7 @@ export const Conversation = ({route, navigation}) => {
             hour12: false
           })}
         </Text> : null}
-      </View>
+      </Pressable>
       ))}
       </ScrollView>
       <View style={styles.inputContainer}>
@@ -99,6 +119,33 @@ export const Conversation = ({route, navigation}) => {
           <MaterialCommunityIcons name="send" size={24} color={colors.background} />
         </Pressable>
       </View>
+      {modalVisible && (
+  <Modal
+    animationType="fade" // Use fade to have a smoother transition
+    transparent={true}
+    visible={modalVisible}
+    onRequestClose={() => {
+      setModalVisible(false);
+    }}
+  >
+    <Pressable
+      style={styles.modalOverlay}
+      onPress={() => setModalVisible(false)} // This will close the modal when the overlay is pressed
+    >
+      <View style={styles.modalView}>
+        <Pressable
+          style={[styles.button, styles.buttonClose]}
+          onPress={() => {
+            deleteMessage(selectedMessageId);
+            setModalVisible(false);
+          }}
+        >
+          <Text style={styles.modalText}>Remove</Text>
+        </Pressable>
+      </View>
+    </Pressable>
+  </Modal>
+)}
     </View>
   );
 };
@@ -191,4 +238,29 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.inputChatBox,
   },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    alignItems: "center",
+    elevation: 5,
+    backgroundColor: colors.inputChatBox,
+  },
+  modalText: {
+    color: colors.background,
+    fontWeight: 'bold',
+    fontSize: 12,
+    padding: 10,
+  }
 });
