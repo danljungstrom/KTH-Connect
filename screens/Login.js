@@ -1,16 +1,43 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native';
 import { useUser } from '../services/UserProvider';
+import PrivateProfileModal from '../components/PrivateProfileModal';
+import ErrorModal from '../components/ErrorModal';
 
 export const Login = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { signIn } = useUser();
+  const [isPrivateProfileModalVisible, setPrivateProfileModalVisible] = useState(false);
+  const [isErrorModalVisible, setErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const showErrorModal = (message) => {
+    setErrorMessage(message);
+    setErrorModalVisible(true);
+  };
 
   getUser = async () => {
+    if (username === '' || password === '') {
+      showErrorModal('Please enter username and password');
+    }
+
+    if(username.includes('@')) {
+      username = username.split('@')[0];      
+    }
+
     const user = await signIn(username, password);
 
-    if (user.currentCampus) {
+    if(user == 'failedAuthNoUser') {
+      showErrorModal('User doesn\'t exist.');
+    }
+    else if(user === 'failedAuth') {
+      showErrorModal('Incorrect password.');
+    }
+    else if (user === '404') {
+      setPrivateProfileModalVisible(true);
+    }
+    else if (user.currentCampus) {
       navigation.navigate('Main');
     }
     else{
@@ -28,6 +55,16 @@ export const Login = ({navigation}) => {
       <Pressable style={styles.button} onPress={() => getUser()}>
         <Text style={styles.buttonText}>Login</Text>
       </Pressable>
+      <PrivateProfileModal
+        username={username}
+        visible={isPrivateProfileModalVisible}
+        onClose={() => setPrivateProfileModalVisible(false)}
+      />
+      <ErrorModal
+        errorMessage={errorMessage}
+        visible={isErrorModalVisible}
+        onClose={() => setErrorModalVisible(false)}
+      />
     </View>
   );
 }

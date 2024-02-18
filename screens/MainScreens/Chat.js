@@ -88,11 +88,11 @@ export const Chat = ({navigation}) => {
     const messageDate = timestamp;
     const currentDate = new Date();
   
-    const dayDifference = Math.floor((currentDate - messageDate) / (1000 * 60 * 60 * 24));
+    const dayDifference = Math.floor((new Date(currentDate).setHours(0, 0, 0, 0) - new Date(timestamp).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24));
 
-    if (dayDifference < 1) {
+    if (dayDifference === 0) {
       return 'Today, ' + messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-    } else if (dayDifference === 2) {
+    } else if (dayDifference === 1) {
       return 'Yesterday, ' + messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
     } else if (dayDifference < 7) {
       return messageDate.toLocaleDateString('en-US', { weekday: 'long' }) + 
@@ -114,10 +114,13 @@ export const Chat = ({navigation}) => {
         >
           <Image
             style={styles.avatar}
-            source={{ uri: conversation.otherUser.image }}
+            source={conversation.otherUser.image}
           />
           <View style={styles.textContainer}>
-            <Text style={styles.name}>{conversation.otherUser.givenName + " " + conversation.otherUser.familyName}</Text>
+            <View style={styles.nameContainer}>
+              <Text style={styles.name}>{conversation.otherUser.givenName + " " + conversation.otherUser.familyName}</Text>
+              {conversation.otherUser.url === "backup" && <Text style={styles.inactive}>Inactive User</Text>}
+            </View>
             {conversation.latestMessage && <Text style={styles.latestMessage}>{conversation.latestMessage.user === currentUser.username ? 'You: ' : conversation.otherUser.givenName + ": "}{conversation.latestMessage.message}</Text>}
           </View>
           {conversation.latestMessage && (
@@ -171,6 +174,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: colors.text,
+  },
+  nameContainer: {
+    flexDirection: 'row',
+  },
+  inactive: {
+    fontSize: 10,
+    color: "red",
+    marginLeft: 10,
+    fontWeight: 'bold',
+    marginTop: 4,
   },
   latestMessage: {
     marginTop: 3,

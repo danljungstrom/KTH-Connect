@@ -5,7 +5,7 @@ export const Author = ({user}) => {
     return (
         <View style={styles.user}>
             <Image style={styles.avatar}
-                   source={user.image ? {uri: user.image} : require('../assets/blank-profile.png')} />
+                   source={user.image} />
             <Text style={styles.name}>{user.givenName + " " + user.familyName}</Text>
         </View>
     );

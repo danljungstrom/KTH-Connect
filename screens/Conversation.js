@@ -119,7 +119,8 @@ export const Conversation = ({route, navigation}) => {
           />
         </Pressable>
         {otherUser && <Text style={styles.userName}>{otherUser.givenName + " " + otherUser.familyName}</Text>}
-        <Image style={styles.userImage} source={{ uri: otherUser.image }} />
+        <Image style={styles.userImage} source={otherUser.image} />
+        {otherUser.url === "backup" && <Text style={styles.inactive}>Inactive</Text>}
       </View>
       <ScrollView style={styles.messagesContainer}>
         {groupMessagesByDate(messages).map(([dateString, groupedMessages]) => (
@@ -209,6 +210,13 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginTop: -5,
     borderRadius: 50,
+  },
+  inactive: {
+    marginLeft: 10,
+    marginTop: 5,
+    color: "red",
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   container: {
     flex: 1,

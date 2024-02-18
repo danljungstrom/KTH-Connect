@@ -20,7 +20,7 @@ export const Profile = ({navigation}) => {
   return (
     <>
       {currentUserProfile && <View style={styles.container}>
-      <Image style={styles.avatar} source={{uri: currentUserProfile.image}} />
+      <Image style={styles.avatar} source={currentUserProfile.image} />
       <Text style={styles.text}>{currentUserProfile.givenName + " " + currentUserProfile.familyName}</Text>
       <Text style={styles.text}>{currentUser.username + '@kth.se'}</Text>
       </View>}
