@@ -28,14 +28,36 @@ export const UserProvider = ({ children }) => {
   };
 
   const auth = async (username, password) => {
-    return true;
-  }
+    try {
+      const response = await fetch('https://us-central1-kth-connect.cloudfunctions.net/smtpAuth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+  
+      if (!response.ok) {
+        const errorResponse = await response.text(); // Get the text of the error response
+        console.error('SMTP Auth failed with response:', errorResponse);
+        throw new Error('SMTP Auth failed');
+      }
+  
+      const data = await response.json();
+      return data.success;
+    } catch (error) {
+      console.error('SMTP Auth error:', error);
+      return false;
+    }
+  };
 
   const signIn = async (username, password) => {
+    console.log("Running sign in")
     const userData = await fetchUserData(username);
+    const isAuthenticated = await auth(username, password);
+    console.log(isAuthenticated);
 
-    //TODO Implement SMTP authentication
-    if(await auth(username, password)){
+    if(isAuthenticated){
       const userRef = doc(db, 'Users', username);
       const user = await getDoc(userRef);
 

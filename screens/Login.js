@@ -29,7 +29,7 @@ export const Login = ({navigation}) => {
     const user = await signIn(username, password);
 
     if(user == 'failedAuthNoUser') {
-      showErrorModal('User doesn\'t exist.');
+      showErrorModal('User either doesn\'t exist or it has a private KTH Social profile.');
     }
     else if(user === 'failedAuth') {
       showErrorModal('Incorrect password.');
