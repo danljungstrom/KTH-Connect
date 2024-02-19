@@ -1,5 +1,6 @@
 import { StyleSheet, View, Image, FlatList, Text } from 'react-native';
 import { useCampus } from '../services/CampusProvider';
+import { colors } from '../assets/colors';
 
 export const ChooseCampus = ({navigation}) => {
   const { setSelectedCampus, campuses } = useCampus();
@@ -21,6 +22,7 @@ export const ChooseCampus = ({navigation}) => {
         }
         keyExtractor={(item) => item.id}
         />
+      <Text style={styles.infoText}>Choose what campus you want to interact with. This can be changed later on.</Text>
     </View>
   );
 }
@@ -33,17 +35,17 @@ const styles = StyleSheet.create({
   },
   list: {
     width: 200,
-    color: '#FFFFFF',
-    backgroundColor: '#002145',
+    color: colors.text,
+    backgroundColor: colors.chooseCampusBackground,
     borderWidth: 2,
     borderRadius: 10,
-    borderColor: 'rgba(50, 135, 194, 0.5)',
+    borderColor: colors.chooseCampusBorder,
     flexGrow: 0,
   },
   listHeader: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: colors.text,
     textAlign: 'center',
     marginBottom: 10,
     marginTop: 10,
@@ -51,15 +53,23 @@ const styles = StyleSheet.create({
   listText: {
     fontSize: 15,
     textAlign: 'center',
-    color: '#FFFFFF',
+    color: colors.text,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(123, 163, 191, 0.1)',
+    borderTopColor: colors.chooseCampusListBorder,
     padding: 8,
   },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(1, 25, 52, 1)',
+    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  infoText: {
+    fontSize: 12,
+    color: colors.accentText,
+    textAlign: 'center',
+    width: 330,
+    marginTop: 100,
+    marginBottom: -150,
+  }
 });

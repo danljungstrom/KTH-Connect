@@ -38,9 +38,8 @@ export const UserProvider = ({ children }) => {
       });
   
       if (!response.ok) {
-        const errorResponse = await response.text(); // Get the text of the error response
-        console.error('SMTP Auth failed with response:', errorResponse);
-        throw new Error('SMTP Auth failed');
+        const errorResponse = await response.text();
+        throw new Error(errorResponse);
       }
   
       const data = await response.json();
@@ -52,10 +51,8 @@ export const UserProvider = ({ children }) => {
   };
 
   const signIn = async (username, password) => {
-    console.log("Running sign in")
     const userData = await fetchUserData(username);
     const isAuthenticated = await auth(username, password);
-    console.log(isAuthenticated);
 
     if(isAuthenticated){
       const userRef = doc(db, 'Users', username);

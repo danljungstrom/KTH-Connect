@@ -1,7 +1,6 @@
 export const colors = {
     background: '#011934',
     actionButtons: 'rgba(0, 53, 111, 1)',
-    loginButtons: 'rgba(0, 53, 111, 1)',
     accent: '#132E49',
     text: '#ffffff',
     icons: '#ffffff',
@@ -16,4 +15,7 @@ export const colors = {
     inputChatBox: '#b8c0c8',
     incommingMessage: '#b8c0c8',
     outgoingMessage: '#7ba3bf',
+    chooseCampusBorder: 'rgba(22,71,113,255)',
+    chooseCampusListBorder: 'rgba(0,42,77,255)',
+    chooseCampusBackground: '#002145',
 }
