@@ -23,7 +23,9 @@ export const Login = ({navigation}) => {
       showErrorModal('Please enter username and password');
     }
 
-    const user = username.includes('@') ? await signIn(username.split('@')[0], password) : await signIn(username, password);
+    const user = username.includes('@') ? 
+      await signIn(username.toLowerCase().split('@')[0], password) : 
+      await signIn(username.toLowerCase(), password);
 
     if(user == 'failedAuthNoUser') {
       showErrorModal('User either doesn\'t exist or it has a private KTH Social profile.');
@@ -45,6 +47,7 @@ export const Login = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={require('../assets/icon.png')} />
+      <View style={styles.loginContainer}>
       <Text style={styles.text}>KTH-Mail</Text>
       <TextInput style={styles.input} onChangeText={setUsername}></TextInput>
       <Text style={styles.text}>Password</Text>
@@ -52,6 +55,7 @@ export const Login = ({navigation}) => {
       <Pressable style={styles.button} onPress={() => getUser()}>
         <Text style={styles.buttonText}>Login</Text>
       </Pressable>
+      </View>
       <Text style={styles.infoText}>Login using your regular KTH account. Your name and profile picture will be fetched from KTH Social. Note that your password is never saved within the app, it will always use your KTH password and only uses the password to authenticate the login using the KTH email service.</Text>
       <PrivateProfileModal
         username={username}
@@ -71,12 +75,18 @@ const styles = StyleSheet.create({
   logo: {
     width: 105,
     height: 105,
-    marginBottom: 75,
+    borderRadius: 20,
+    marginBottom: 100,
+  },
+  loginContainer: {
+    alignItems: 'center',
+    width: 300,
   },
   text: {
     fontSize: 12,
     color: colors.accentText,
-    marginLeft: -150,
+    marginLeft: -140,
+    width: 60
   },
   input: {
     width: 200,

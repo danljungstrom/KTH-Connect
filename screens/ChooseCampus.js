@@ -31,7 +31,9 @@ const styles = StyleSheet.create({
   logo: {
     width: 105,
     height: 105,
+    marginTop: 75,
     marginBottom: 75,
+    borderRadius: 20,
   },
   list: {
     width: 200,
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
     color: colors.accentText,
     textAlign: 'center',
     width: 330,
-    marginTop: 100,
-    marginBottom: -150,
+    marginTop: 150,
+    marginBottom: -100,
   }
 });
