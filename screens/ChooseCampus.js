@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 105,
     height: 105,
-    marginTop: 75,
+    marginTop: 25,
     marginBottom: 75,
     borderRadius: 20,
   },
@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.accentText,
     textAlign: 'center',
-    width: 330,
-    marginTop: 150,
+    width: 260,
+    marginTop: 100,
     marginBottom: -100,
   }
 });
