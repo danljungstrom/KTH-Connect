@@ -36,7 +36,7 @@ export const Login = ({navigation}) => {
     else if (user === '404') {
       setPrivateProfileModalVisible(true);
     }
-    else if (user.currentCampus) {
+    else if (user.selectedCampus) {
       navigation.navigate('Main');
     }
     else{

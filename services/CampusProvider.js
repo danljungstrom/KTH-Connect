@@ -27,6 +27,14 @@ export const CampusProvider = ({ children }) => {
     fetchCampuses();
   }, []);
 
+  useEffect(() => {
+    if(currentUser){
+      if(currentUser.hasOwnProperty('selectedCampus')){
+        setCurrentCampus(currentUser.selectedCampus);
+      }
+    }
+  }, currentUser);
+
   setSelectedCampus = (campusId) => {
     const campus = campuses.find(c => c.id === campusId);
     const userRef = doc(db, 'Users', currentUser.username);

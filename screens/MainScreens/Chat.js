@@ -8,6 +8,7 @@ import { colors } from "../../assets/colors";
 
 export const Chat = ({navigation}) => {
   const { currentUser } = useUser();
+  currentUser.username = 'viland'
   const [conversations, setConversations] = useState([]);
 
   useEffect(() => {

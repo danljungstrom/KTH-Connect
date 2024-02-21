@@ -9,6 +9,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export const Conversation = ({route, navigation}) => {
   const {conversationId, otherUser} = route.params;
   const {currentUser} = useUser();
+  currentUser.username = 'viland'
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
