@@ -20,7 +20,7 @@ export const CampusProvider = ({ children }) => {
         }));
         setCampuses(campusList);
       } catch (error) {
-        console.error("Error fetching campuses: ", error);
+        console.log("Error fetching campuses: ", error);
       }
     };
 
@@ -29,7 +29,7 @@ export const CampusProvider = ({ children }) => {
 
   useEffect(() => {
     if(currentUser && currentUser.hasOwnProperty('selectedCampus')){
-      setCurrentCampus(currentUser.selectedCampus);
+      setCurrentCampus(campuses[currentUser.selectedCampus]);
     }
   }, [currentUser]);
 

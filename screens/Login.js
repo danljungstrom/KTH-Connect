@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native';
 import { useUser } from '../services/UserProvider';
 import PrivateProfileModal from '../components/PrivateProfileModal';
-import ErrorModal from '../components/ErrorModal';
+import InfoModal from '../components/InfoModal';
 import { colors } from '../assets/colors';
 
 export const Login = ({navigation}) => {
@@ -10,49 +10,72 @@ export const Login = ({navigation}) => {
   const [password, setPassword] = useState('');
   const { signIn } = useUser();
   const [isPrivateProfileModalVisible, setPrivateProfileModalVisible] = useState(false);
-  const [isErrorModalVisible, setErrorModalVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [isInfoModalVisible, setInfoModalVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  const passwordInputRef = useRef(null);
 
-  const showErrorModal = (message) => {
-    setErrorMessage(message);
-    setErrorModalVisible(true);
+  const showInfoModal = (title, message) => {
+    setModalTitle(title);
+    setModalMessage(message);
+    setInfoModalVisible(true);
   };
 
   getUser = async () => {
     if (username === '' || password === '') {
-      showErrorModal('Please enter username and password');
+      showInfoModal('Error', 'Please enter username and password');
     }
+
+    showInfoModal('Loading', 'Logging in...');
 
     const user = username.includes('@') ? 
       await signIn(username.toLowerCase().split('@')[0], password) : 
       await signIn(username.toLowerCase(), password);
 
     if(user == 'failedAuthNoUser') {
-      showErrorModal('User either doesn\'t exist or it has a private KTH Social profile.');
+      showInfoModal('Error', 'User either doesn\'t exist or it has a private KTH Social profile.');
     }
     else if(user === 'failedAuth') {
-      showErrorModal('Incorrect password.');
+      showInfoModal('Error', 'Incorrect password.');
     }
     else if (user === '404') {
       setPrivateProfileModalVisible(true);
     }
     else if (user.selectedCampus) {
+      setInfoModalVisible(false);
       navigation.navigate('Main');
     }
     else{
+      setInfoModalVisible(false);
       navigation.navigate('ChooseCampus')
     }
   }
+
+  const handleUsernameSubmit = () => {
+    passwordInputRef.current && passwordInputRef.current.focus();
+  };
 
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={require('../assets/icon.png')} />
       <View style={styles.loginContainer}>
       <Text style={styles.text}>KTH-Mail</Text>
-      <TextInput style={styles.input} onChangeText={setUsername}></TextInput>
+      <TextInput 
+        style={styles.input} 
+        onChangeText={setUsername}
+        onSubmitEditing={handleUsernameSubmit}
+        returnKeyType="next"
+      ></TextInput>
       <Text style={styles.text}>Password</Text>
-      <TextInput style={styles.input} onChangeText={setPassword} secureTextEntry={true} onSubmitEditing={() => getUser()}></TextInput>
-      <Pressable style={styles.button} onPress={() => getUser()}>
+      <TextInput 
+        style={styles.input} 
+        ref={passwordInputRef}
+        onChangeText={setPassword}
+        secureTextEntry={true} 
+        onSubmitEditing={getUser}
+        returnKeyType="go"
+      ></TextInput>
+      <Pressable style={styles.button} onPress={getUser}>
         <Text style={styles.buttonText}>Login</Text>
       </Pressable>
       </View>
@@ -62,10 +85,11 @@ export const Login = ({navigation}) => {
         visible={isPrivateProfileModalVisible}
         onClose={() => setPrivateProfileModalVisible(false)}
       />
-      <ErrorModal
-        errorMessage={errorMessage}
-        visible={isErrorModalVisible}
-        onClose={() => setErrorModalVisible(false)}
+      <InfoModal
+        title={modalTitle}
+        message={modalMessage}
+        visible={isInfoModalVisible}
+        onClose={() => setInfoModalVisible(false)}
       />
     </View>
   );

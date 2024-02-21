@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Modal, View, Text, StyleSheet, Pressable, Linking } from 'react-native';
+import React from 'react';
+import { Modal, View, Text, StyleSheet, Pressable } from 'react-native';
 import { colors } from '../assets/colors';
 
-const ErrorModal = ({ errorMessage, visible, onClose }) => {
+const InfoModal = ({ title, message, visible, onClose }) => {
 
   return (
     <Modal
@@ -13,14 +13,14 @@ const ErrorModal = ({ errorMessage, visible, onClose }) => {
     >
     <View style={styles.centeredView}>
         <View style={styles.modalView}>
-        <Text style={styles.modalText}>Error</Text>
-        <Text style={styles.errorText}>{errorMessage}</Text>
-        <Pressable
+        <Text style={styles.modalText}>{title}</Text>
+        <Text style={styles.messageText}>{message}</Text>
+        {title === 'Error' && <Pressable
             style={styles.button}
             onPress={onClose}
         >
-            <Text style={styles.buttonText}>OK</Text>
-        </Pressable>
+            <Text style={styles.buttonText}>Try Again</Text>
+        </Pressable>}
         </View>
     </View>
     </Modal>
@@ -36,25 +36,28 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: '#002244',
+    backgroundColor: colors.chooseCampusBackground,
+    borderWidth: 1,
+    borderColor: colors.chooseCampusBorder,
     borderRadius: 10,
-    padding: 50,
+    padding: 60,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
+    minWidth: 250,
+    minHeight: 200,
   },
   button: {
+    marginTop: 25,
+    minWidth: 100,
     borderRadius: 10,
     padding: 10,
     margin: 5,
-    elevation: 2,
-    backgroundColor: colors.loginButtons
+    backgroundColor: colors.actionButtons
+  },
+  buttonText: {
+    fontSize: 15,
+    color: colors.text,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   modalText: {
     fontSize: 20,
@@ -63,11 +66,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center"
   },
-  errorText: {
+  messageText: {
     color: colors.text,
     marginBottom: 15,
     textAlign: "center"
   }
 });
 
-export default ErrorModal;
+export default InfoModal;

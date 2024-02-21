@@ -25,11 +25,11 @@ export const fetchUserProfile = async (username) => {
         }
       }
       else{
-        console.error('Failed to fetch user profile:', response.status);
+        console.log('Failed to fetch user profile:', response.status);
         return null;
       }
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      console.log('Error fetching user profile:', error);
       return null;
     }
   };
@@ -43,11 +43,11 @@ export const fetchUserProfile = async (username) => {
         return userJson;
       }
       else{
-        console.error('Failed to fetch user profile:', response.status);
+        console.log('Failed to fetch user profile:', response.status);
         return null;
       }
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      console.log('Error fetching user profile:', error);
       return null;
     }
   };

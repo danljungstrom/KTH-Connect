@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
         paddingVertical: 20,
         marginBottom: 10,
         borderColor: colors.border,
-        borderTopWidth: 1,
+        borderBottomWidth: 1,
         rowGap:15
     },
     postOnPostPage: {

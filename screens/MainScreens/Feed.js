@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, View } from 'react-native';
 import { Post } from '../../components/Post';
 import { colors } from "../../assets/colors";
 import { collection, getDocs } from 'firebase/firestore';
@@ -18,7 +18,7 @@ export const Feed = () => {
         }));
         setPosts(postList);
       } catch (error) {
-        console.error("Error fetching posts: ", error);
+        console.log("Error fetching posts: ", error);
       }
     };
 
@@ -35,6 +35,7 @@ export const Feed = () => {
           showLikeButton={true}
           showCommentButton={true}
         />)}
+        <View style={{height: 100}}></View>
     </ScrollView>
   );
 }
@@ -43,6 +44,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.background,
     paddingBottom: 10,
-    paddingTop: 30
+    paddingTop: 40,
   },
 });

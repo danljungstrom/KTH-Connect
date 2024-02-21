@@ -137,9 +137,10 @@ export const Chat = ({navigation}) => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
-    margin: 30,
+    marginTop: 50,
+    marginBottom: 30,
     alignSelf: 'center',
     color: colors.text
   },

@@ -70,10 +70,10 @@ export const Conversation = ({route, navigation}) => {
       try {
         await deleteDoc(messageRef);
       } catch (error) {
-        console.error("Error deleting message: ", error);
+        console.log("Error deleting message: ", error);
       }
     } else {
-      console.error("Message not found or not authorized to delete it.");
+      console.log("Message not found or not authorized to delete it.");
     }
   };
 

@@ -5,7 +5,7 @@ import { colors } from '../assets/colors';
 const PrivateProfileModal = ({ username, visible, onClose }) => {
   const handlePressLink = () => {
     const profileUrl = 'https://www.kth.se/profile/' + username + '/edit';
-    Linking.openURL(profileUrl).catch(err => console.error('An error occurred', err));
+    Linking.openURL(profileUrl).catch(err => console.log('An error occurred', err));
   };
 
   return (
