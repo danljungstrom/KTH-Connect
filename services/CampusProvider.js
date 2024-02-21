@@ -28,12 +28,10 @@ export const CampusProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if(currentUser){
-      if(currentUser.hasOwnProperty('selectedCampus')){
-        setCurrentCampus(currentUser.selectedCampus);
-      }
+    if(currentUser && currentUser.hasOwnProperty('selectedCampus')){
+      setCurrentCampus(currentUser.selectedCampus);
     }
-  }, currentUser);
+  }, [currentUser]);
 
   setSelectedCampus = (campusId) => {
     const campus = campuses.find(c => c.id === campusId);

@@ -7,8 +7,8 @@ import { useUser } from '../../services/UserProvider';
 import { colors } from "../../assets/colors";
 
 export const Chat = ({navigation}) => {
-  const { currentUser } = useUser();
-  currentUser.username = 'viland'
+  //const { currentUser } = useUser();
+  const currentUser = {username: 'viland'};
   const [conversations, setConversations] = useState([]);
 
   useEffect(() => {

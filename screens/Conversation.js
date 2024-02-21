@@ -8,8 +8,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export const Conversation = ({route, navigation}) => {
   const {conversationId, otherUser} = route.params;
-  const {currentUser} = useUser();
-  currentUser.username = 'viland'
+  //const {currentUser} = useUser();
+  const currentUser = {username: 'viland'};
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -162,7 +162,7 @@ export const Conversation = ({route, navigation}) => {
       </View>
       {modalVisible && (
   <Modal
-    animationType="fade" // Use fade to have a smoother transition
+    animationType="fade"
     transparent={true}
     visible={modalVisible}
     onRequestClose={() => {
@@ -171,7 +171,7 @@ export const Conversation = ({route, navigation}) => {
   >
     <Pressable
       style={styles.modalOverlay}
-      onPress={() => setModalVisible(false)} // This will close the modal when the overlay is pressed
+      onPress={() => setModalVisible(false)}
     >
       <View style={styles.modalView}>
         <Pressable
