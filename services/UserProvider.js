@@ -19,7 +19,7 @@ export const UserProvider = ({ children }) => {
         familyName: user.familyName,
       });
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.log("Error adding document: ", error);
     }
   };
 
@@ -45,7 +45,7 @@ export const UserProvider = ({ children }) => {
       const data = await response.json();
       return data.success;
     } catch (error) {
-      console.error('SMTP Auth error:', error);
+      console.log('SMTP Auth error:', error);
       return false;
     }
   };
