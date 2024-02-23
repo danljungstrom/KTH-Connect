@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
         width: 23,
         height: 23,
         borderRadius: 50,
-        marginRight: 5
+        marginRight: 10
     },
     name: {
         fontSize: 16,

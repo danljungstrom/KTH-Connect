@@ -21,6 +21,7 @@ export const fetchUserProfile = async (username) => {
           givenName: user.givenName,
           familyName: user.familyName,
           image: missingProfileImage,
+          email: user.username + "@kth.se",
           url: "backup"
         }
       }

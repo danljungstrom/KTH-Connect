@@ -3,49 +3,60 @@ import { StyleSheet, View, Text, ScrollView, TextInput, Pressable, Image, Modal 
 import { useUser } from '../services/UserProvider';
 import { colors } from '../assets/colors';
 import { db } from '../config/firebaseConfig';
-import { doc, deleteDoc, query, onSnapshot, collection, addDoc, serverTimestamp, orderBy } from 'firebase/firestore';
+import { getDocs, doc, deleteDoc, query, onSnapshot, collection, addDoc, serverTimestamp, orderBy } from 'firebase/firestore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export const Conversation = ({route, navigation}) => {
-  const {conversationId, otherUser} = route.params;
-  //const {currentUser} = useUser();
-  const currentUser = {username: 'viland'};
+  const {conversationId: initialConversationId, otherUser} = route.params;
+  const {currentUser} = useUser();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedMessageId, setSelectedMessageId] = useState(null);
   const [longPressCoords, setLongPressCoords] = useState({ x: 0, y: 0 });
+  const [conversationId, setConversationId] = useState(initialConversationId);
 
   useEffect(() => {
-    const messagesRef = collection(db, 'Conversations', conversationId, 'messages');
-    const q = query(messagesRef, orderBy("timestamp", "asc"));
-  
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const fetchedMessages = querySnapshot.docs.map(doc => {
-        const data = doc.data();
-        const timestamp = data.timestamp ? data.timestamp.toDate() : null;
-        return {
-          id: doc.id,
-          ...data,
-          timestamp,
-        };
+    if (conversationId){
+      const messagesRef = collection(db, 'Conversations', conversationId, 'messages');
+      const q = query(messagesRef, orderBy("timestamp", "asc"));
+    
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const fetchedMessages = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          const timestamp = data.timestamp ? data.timestamp.toDate() : null;
+          return {
+            id: doc.id,
+            ...data,
+            timestamp,
+          };
+        });
+      
+        const sortedMessages = fetchedMessages.sort((a, b) => (a.timestamp && b.timestamp) ? a.timestamp - b.timestamp : 0);
+        setMessages(sortedMessages);
       });
     
-      const sortedMessages = fetchedMessages.sort((a, b) => (a.timestamp && b.timestamp) ? a.timestamp - b.timestamp : 0);
-      setMessages(sortedMessages);
-    });
-  
-    return () => unsubscribe();
+      return () => unsubscribe();
+    }
   }, [conversationId]);
 
-  const sendMessage = async () => {
-    if (newMessage.trim() === '') return;
+  const sendMessage = async (text) => {
+    if (text.trim() === '') return;
+
+    let localConversationId = conversationId;
+
+    if (!localConversationId) {
+      const conversationRef = await addDoc(collection(db, 'Conversations'), {
+        users: [currentUser.username, otherUser.email.split('@')[0]],
+      });
+
+      localConversationId = conversationRef.id;
+      setConversationId(localConversationId);
+    }
     
-    const messagesRef = collection(db, 'Conversations', conversationId, 'messages');
-    
-    await addDoc(messagesRef, {
+    await addDoc(collection(db, 'Conversations', localConversationId, 'messages'), {
       user: currentUser.username,
-      message: newMessage,
+      message: text,
       timestamp: serverTimestamp(),
     });
   
@@ -63,19 +74,21 @@ export const Conversation = ({route, navigation}) => {
   };
   
   const deleteMessage = async (messageId) => {
-    const messageToDelete = messages.find(message => message.id === messageId && message.user === currentUser.username);
-    
-    if (messageToDelete) {
-      const messageRef = doc(db, 'Conversations', conversationId, 'messages', messageId);
-      try {
+    const messageRef = doc(db, 'Conversations', conversationId, 'messages', messageId);
+    try {
         await deleteDoc(messageRef);
-      } catch (error) {
-        console.log("Error deleting message: ", error);
-      }
-    } else {
-      console.log("Message not found or not authorized to delete it.");
+
+        const messagesSnapshot = await getDocs(collection(db, 'Conversations', conversationId, 'messages'));
+        if (messagesSnapshot.empty) {
+            const conversationRef = doc(db, 'Conversations', conversationId);
+            await deleteDoc(conversationRef);
+            
+            navigation.goBack();
+        }
+    } catch (error) {
+        console.log("Error deleting message or conversation: ", error);
     }
-  };
+};
 
   const getDayLabel = (date) => {
     if (!date) return 'Unknown Date';
@@ -154,9 +167,9 @@ export const Conversation = ({route, navigation}) => {
           onChangeText={setNewMessage}
           placeholder="Write message..."
           placeholderTextColor={colors.background}
-          onSubmitEditing={sendMessage}
+          onSubmitEditing={() => sendMessage(newMessage)}
         />
-        <Pressable onPress={sendMessage} style={styles.sendButton}>
+        <Pressable onPress={() => sendMessage(newMessage)} style={styles.sendButton}>
           <MaterialCommunityIcons name="send" size={24} color={colors.background} />
         </Pressable>
       </View>
@@ -274,10 +287,11 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
     marginRight: -10,
+    height: 50,
   },
   sendButton: {
-    width: 49.5,
-    height: 49.5,
+    width: 50,
+    height: 50,
     backgroundColor: colors.inputChatBox,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,

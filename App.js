@@ -8,6 +8,7 @@ import { NewPost } from './screens/NewPost';
 import { Main } from './screens/Main';  
 import { PostScreen } from "./screens/PostScreen";
 import { PostConfirmation } from "./screens/PostConfirmation";
+import { NewConversation } from './screens/NewConversation';
 import { Conversation } from './screens/Conversation';
 import { UserProvider } from './services/UserProvider';
 import { CampusProvider } from './services/CampusProvider';
@@ -25,6 +26,7 @@ export default function App() {
             <Stack.Screen name="ChooseCampus" component={ChooseCampus}/>
             <Stack.Screen name="Main" component={Main}/>
             <Stack.Screen name="NewPost" component={NewPost}/>
+            <Stack.Screen name="NewConversation" component={NewConversation}/>
             <Stack.Screen name="Conversation" component={Conversation}/>
             <Stack.Screen name="PostScreen" component={PostScreen}/>
             <Stack.Screen name="PostConfirmation" component={PostConfirmation}/>

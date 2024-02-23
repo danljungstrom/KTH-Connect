@@ -5,10 +5,10 @@ import { db } from '../../config/firebaseConfig';
 import { collection, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
 import { useUser } from '../../services/UserProvider';
 import { colors } from "../../assets/colors";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export const Chat = ({navigation}) => {
-  //const { currentUser } = useUser();
-  const currentUser = {username: 'viland'};
+  const { currentUser } = useUser();
   const [conversations, setConversations] = useState([]);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export const Chat = ({navigation}) => {
       });
   
       const userProfiles = await Promise.all(profilePromises);
-  
+
       let conversationsWithProfiles = querySnapshot.docs.map((doc, index) => {
         return {
           id: doc.id,
@@ -106,7 +106,13 @@ export const Chat = ({navigation}) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Messages</Text>
+        <Text style={styles.title}>Messages</Text>
+        <MaterialCommunityIcons 
+          style={styles.newPostIcon} 
+          name="plus" 
+          color={colors.icons}
+          size={30}
+          onPress={() => navigation.navigate('NewConversation', { conversations: conversations.map(convo => convo.otherUser.email.split('@')[0]) })} />
       {conversations && conversations.map(conversation => (
         <Pressable
           key={conversation.id}
@@ -139,10 +145,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
+    margin: 20,
     marginTop: 50,
-    marginBottom: 30,
     alignSelf: 'center',
     color: colors.text
+  },
+  newPostIcon: {
+    position: 'absolute',
+    right: 20,
+    top: 45,
   },
   container: {
     flex: 1,

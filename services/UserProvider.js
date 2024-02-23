@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import * as SecureStore from 'expo-secure-store';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 import { fetchSignInProfile } from './UserAPI';
@@ -7,6 +8,24 @@ const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  
+  useEffect(() => {
+    const loadStoredUser = async () => {
+      try {
+        const savedUsername = await SecureStore.getItemAsync('savedUsername');
+        if (savedUsername) {
+          const userDoc = await getDoc(doc(db, 'Users', savedUsername));
+          if (userDoc.exists()) {
+            setCurrentUser(userDoc.data());
+          }
+        }
+      } catch (error) {
+        console.log("Could not fetch stored user:", error);
+      }
+    };
+
+    loadStoredUser();
+  }, []);
 
   const addUser = async (user) => {
     const userRef = doc(db, 'Users', user.username);
@@ -55,6 +74,7 @@ export const UserProvider = ({ children }) => {
     const isAuthenticated = await auth(username, password);
 
     if(isAuthenticated){
+      await SecureStore.setItemAsync('savedUsername', username);
       const userRef = doc(db, 'Users', username);
       const user = await getDoc(userRef);
 
@@ -86,7 +106,8 @@ export const UserProvider = ({ children }) => {
     }
   }
 
-  const signOut = () => {
+  const signOut = async () => {
+    await SecureStore.deleteItemAsync('savedUsername');
     setCurrentUser(null);
   }
 
