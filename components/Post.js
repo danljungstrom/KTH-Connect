@@ -13,7 +13,7 @@ import dayjs from "dayjs";
 import {useUser} from "../services/UserProvider";
 import {attendEvent, likePost, subscribeToPostChange, unAttendEvent, unlikePost} from "../firebaseFunctions";
 
-export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, showComments, showAttendButton}) => {
+export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, showComments, showAttendButton, showCampus}) => {
     const navigation = useNavigation()
     const { currentUser } = useUser();
 
@@ -83,6 +83,8 @@ export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, sh
                 </View>
 
                 <View style={styles.buttonContainer}>
+                    {post.campus && showCampus &&
+                        <Text style={styles.campus}>{post.campus}</Text>}
                     {!post.eventInfo && showLikeButton &&
                         <LikeButton onPress={onLike} count={likeCount} liked={liked}/>}
                     {!post.eventInfo && showCommentButton &&
@@ -130,6 +132,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap:7,
         justifyContent: 'flex-end',
+        alignItems: 'center'
     },
     eventTitle: {
         color: colors.text,
@@ -140,5 +143,8 @@ const styles = StyleSheet.create({
     },
     commentContainer: {
         margin:5,
+    },
+    campus: {
+        color: colors.lowOpacityText
     }
 });
