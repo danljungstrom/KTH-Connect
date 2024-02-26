@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, Pressable, TextInput} from 'react-native';
 import { CampusSelector } from '../components/CampusSelector';
-import {addDoc, collection} from 'firebase/firestore';
-import { db } from '../config/firebaseConfig';
 import {useUser} from "../services/UserProvider";
 import {colors} from "../assets/colors";
 import {Author} from "../components/Author";

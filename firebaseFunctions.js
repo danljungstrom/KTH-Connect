@@ -5,7 +5,9 @@ import {
     doc,
     getDocs,
     onSnapshot, serverTimestamp, setDoc,
-    updateDoc
+    updateDoc,
+    query,
+    orderBy
 } from "firebase/firestore";
 import {db} from "./config/firebaseConfig";
 
@@ -26,8 +28,22 @@ export function unlikePost(postID, username) {
 }
 
 export function fetchPostIDList() {
-    return getDocs(collection(db, 'Posts'))
+    let postQuery = query(collection(db, 'Posts'),
+        orderBy("timestamp", "desc"));
+    return getDocs(postQuery)
         .then(querySnapshot => querySnapshot.docs.map(doc => (doc.id)))
+}
+
+export function subscribeToPostIDList(callback) {
+    let postQuery = query(collection(db, 'Posts'),
+        orderBy("timestamp", "desc"));
+    return onSnapshot(postQuery, (querySnapshot) => {
+        const postIDList = [];
+        querySnapshot.forEach((doc) => {
+            postIDList.push(doc.id);
+        });
+        callback(postIDList)
+    });
 }
 
 export function attendEvent(postID, username) {
