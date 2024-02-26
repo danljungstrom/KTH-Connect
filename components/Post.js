@@ -10,26 +10,54 @@ import { fetchUserProfile } from '../services/UserAPI';
 import {useNavigation} from "@react-navigation/native";
 import {Comment} from "./Comment";
 import dayjs from "dayjs";
+import {useUser} from "../services/UserProvider";
+import {db} from "../config/firebaseConfig";
+import {updateDoc, doc, arrayUnion, arrayRemove, onSnapshot} from 'firebase/firestore';
 
-export const Post = ({shownInFeed, post, showLikeButton, showCommentButton, showComments, showAttendButton}) => {
+export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, showComments, showAttendButton}) => {
     const navigation = useNavigation()
-    const likeCount = post.likes ? post.likes.length : 0
-    const commentCount = post.comments ? post.comments.length : 0
-    const liked = false
     const attending = false
     const [user, setUser] = useState(null);
+    const { currentUser } = useUser();
+    const [,forceReRender] = useState();
+    const [post, setPost] = useState(false)
+    const likeCount = post && post.likes ? post.likes.length : 0
+    const commentCount = post && post.comments ? post.comments.length : 0
 
     useEffect(() => {
-        const fetchUserData = async () => {
-          const userData = await fetchUserProfile(post.creator);
-          setUser(userData);
-        };
+        if(post && post.creator) {
+            const fetchUserData = async () => {
+                const userData = await fetchUserProfile(post.creator);
+                setUser(userData);
+            };
 
-        fetchUserData();
-      }, [post.creator]);
+            fetchUserData();
+        }
+      }, [post]);
 
-    function onLike() {
-        // TODO add logged in user to post.likes in firebase
+    useEffect(() => {
+        onSnapshot(doc(db, 'Posts', postID), (doc) => {
+            setPost(doc.data())
+        });
+    }, [])
+
+    function liked() {
+        return post.likes && post.likes.find(item => item === currentUser.username)
+    }
+
+    async function onLike() {
+        let postRef = doc(db, "Posts", postID)
+        if(liked()) { // unlike
+            await updateDoc(postRef, {
+                likes: arrayRemove(currentUser.username)
+            });
+        }
+        else { // like
+            await updateDoc(postRef, {
+                likes: arrayUnion(currentUser.username)
+            });
+        }
+        forceReRender(null)
     }
 
     function onAttend() {
@@ -38,14 +66,14 @@ export const Post = ({shownInFeed, post, showLikeButton, showCommentButton, show
 
     function navigateToPost() {
         if(shownInFeed)
-            navigation.push("PostScreen", {post})
+            navigation.push("PostScreen", {postID: postID})
     }
 
     function timestampToString(timestamp) {
         return dayjs.unix(timestamp.seconds).format('YYYY-MM-DD HH:mm')
     }
 
-    return (
+    return (post &&
         <>
             <Pressable style={shownInFeed ? styles.post : {...styles.post, ...styles.postOnPostPage}}
                        onPress={navigateToPost}>
@@ -68,7 +96,7 @@ export const Post = ({shownInFeed, post, showLikeButton, showCommentButton, show
 
                 <View style={styles.buttonContainer}>
                     {!post.eventInfo && showLikeButton &&
-                        <LikeButton onPress={onLike} count={likeCount} liked={liked}/>}
+                        <LikeButton onPress={onLike} count={likeCount} liked={liked()}/>}
                     {!post.eventInfo && showCommentButton &&
                         <CommentButton onPress={navigateToPost} count={commentCount}/>}
                 </View>
@@ -78,7 +106,7 @@ export const Post = ({shownInFeed, post, showLikeButton, showCommentButton, show
 
             </Pressable>
 
-            {showComments && post.comments &&  <View style={styles.commentContainer}>
+            {post.comments && showComments &&  <View style={styles.commentContainer}>
                 {post.comments.map((comment, index) => <Comment comment={comment} key={"comment" + index}/> )}
             </View>}
         </>

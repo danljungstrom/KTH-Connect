@@ -6,7 +6,7 @@ import { fetchUserProfile } from '../../services/UserAPI';
 //TODO: Implement
 export const Profile = ({navigation}) => {
   const { currentUser } = useUser();
-  const [ currentUserProfile, setCurrentUserProfile ] = useState(null);
+  const [ currentUserProfile, setCurrentUserProfile ] = useState(null)
 
   useEffect(() => {
     const fetchUserData = async () => {

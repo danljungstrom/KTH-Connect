@@ -6,18 +6,18 @@ import {GoBackButton} from "../components/GoBackButton";
 
 export const PostScreen = ({route, navigation}) => {
 
-    const post = route.params.post
+    const postID = route.params.postID
 
     return (
         <ScrollView style={styles.container}>
             <View style={styles.topBar}>
-                <GoBackButton navigation={navigation}/>
+                <GoBackButton/>
             </View>
             <Post
                 navigation={navigation}
                 shownInFeed={false}
-                key={post.id}
-                post={post}
+                key={postID}
+                postID={postID}
                 showLikeButton={true}
                 showCommentButton={false}
                 showComments={true}
