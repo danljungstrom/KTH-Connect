@@ -1,4 +1,12 @@
-import {arrayRemove, arrayUnion, collection, doc, getDocs, onSnapshot, updateDoc} from "firebase/firestore";
+import {
+    arrayRemove,
+    arrayUnion,
+    collection,
+    doc,
+    getDocs,
+    onSnapshot,
+    updateDoc
+} from "firebase/firestore";
 import {db} from "./config/firebaseConfig";
 
 export function subscribeToPostChange(postID, callback) {
@@ -31,5 +39,15 @@ export function attendEvent(postID, username) {
 export function unAttendEvent(postID, username) {
     return updateDoc(doc(db, "Posts", postID), {
         "eventInfo.attending": arrayRemove(username)
+    });
+}
+
+export function commentOnPost(postID, username, comment) {
+    return updateDoc(doc(db, "Posts", postID), {
+        comments: arrayUnion({
+            author: username,
+            comment,
+            date: Date()
+        })
     });
 }

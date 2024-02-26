@@ -3,33 +3,43 @@ import {ScrollView, View, StyleSheet} from "react-native";
 import {colors} from "../assets/colors";
 import {Post} from "../components/Post";
 import {GoBackButton} from "../components/GoBackButton";
+import {NewComment} from "../components/NewComment";
 
 export const PostScreen = ({route, navigation}) => {
 
     const postID = route.params.postID
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.topBar}>
-                <GoBackButton/>
+        <View style={styles.container}>
+            <ScrollView style={styles.postContainer}>
+                <View style={styles.topBar}>
+                    <GoBackButton/>
+                </View>
+                <Post
+                    navigation={navigation}
+                    shownInFeed={false}
+                    key={postID}
+                    postID={postID}
+                    showLikeButton={true}
+                    showCommentButton={false}
+                    showComments={true}
+                    showAttendButton={true}
+                />
+            </ScrollView>
+            <View style={styles.newCommentContainer}>
+                <NewComment postID={postID}/>
             </View>
-            <Post
-                navigation={navigation}
-                shownInFeed={false}
-                key={postID}
-                postID={postID}
-                showLikeButton={true}
-                showCommentButton={false}
-                showComments={true}
-                showAttendButton={true}
-            />
-        </ScrollView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: colors.background,
+        height:'100%',
+        justifyContent: "flex-end"
+    },
+    postContainer: {
         paddingVertical: 30
     },
     topBar: {
@@ -39,4 +49,8 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         paddingHorizontal: 10
     },
+    newCommentContainer: {
+        padding:15,
+        marginBottom:30
+    }
 })
