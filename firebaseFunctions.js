@@ -11,32 +11,35 @@ import {
 } from "firebase/firestore";
 import {db} from "./config/firebaseConfig";
 
+const postsRef = collection(db, "Posts")
+const postQuery = query(postsRef, orderBy("timestamp", "desc"))
+
+function postRef(postID) {
+    return doc(db, 'Posts', postID)
+}
+
 export function subscribeToPostChange(postID, callback) {
-    return onSnapshot(doc(db, 'Posts', postID), callback);
+    return onSnapshot(postRef(postID), callback);
 }
 
 export function likePost(postID, username) {
-    return updateDoc(doc(db, "Posts", postID), {
+    return updateDoc(postRef(postID), {
         likes: arrayUnion(username)
     });
 }
 
 export function unlikePost(postID, username) {
-    return updateDoc(doc(db, "Posts", postID), {
+    return updateDoc(postRef(postID), {
         likes: arrayRemove(username)
     });
 }
 
 export function fetchPostIDList() {
-    let postQuery = query(collection(db, 'Posts'),
-        orderBy("timestamp", "desc"));
     return getDocs(postQuery)
         .then(querySnapshot => querySnapshot.docs.map(doc => (doc.id)))
 }
 
 export function subscribeToPostIDList(callback) {
-    let postQuery = query(collection(db, 'Posts'),
-        orderBy("timestamp", "desc"));
     return onSnapshot(postQuery, (querySnapshot) => {
         const postIDList = [];
         querySnapshot.forEach((doc) => {
@@ -47,19 +50,19 @@ export function subscribeToPostIDList(callback) {
 }
 
 export function attendEvent(postID, username) {
-    return updateDoc(doc(db, "Posts", postID), {
+    return updateDoc(postRef(postID), {
         "eventInfo.attending": arrayUnion(username)
     });
 }
 
 export function unAttendEvent(postID, username) {
-    return updateDoc(doc(db, "Posts", postID), {
+    return updateDoc(postRef(postID), {
         "eventInfo.attending": arrayRemove(username)
     });
 }
 
 export function commentOnPost(postID, username, comment) {
-    return updateDoc(doc(db, "Posts", postID), {
+    return updateDoc(postRef(postID), {
         comments: arrayUnion({
             author: username,
             comment,

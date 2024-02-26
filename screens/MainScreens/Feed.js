@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import { Post } from '../../components/Post';
 import { colors } from "../../assets/colors";
-import {fetchPostIDList} from "../../firebaseFunctions";
+import {subscribeToPostIDList} from "../../firebaseFunctions";
 
 export const Feed = () => {
   const [postIDs, setPostIDs] = useState([]);
 
   useEffect(() => {
-    fetchPostIDList().then(setPostIDs)
-        .catch(error => {console.log("Error fetching posts: ", error)})
+    subscribeToPostIDList(setPostIDs)
   }, []);
 
   return (
