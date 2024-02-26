@@ -7,16 +7,16 @@ import {
     onSnapshot, serverTimestamp, setDoc,
     updateDoc,
     query,
-    orderBy
+    orderBy, where
 } from "firebase/firestore";
 import {db} from "./config/firebaseConfig";
 
 const postsRef = collection(db, "Posts")
 const postQuery = query(postsRef, orderBy("timestamp", "desc"))
 
-function postRef(postID) {
-    return doc(db, 'Posts', postID)
-}
+const postRef = (postID) => doc(db, 'Posts', postID)
+const postQueryForCampus = (campus) => query(postsRef, where("campus", "==", campus),
+                                            orderBy("timestamp", "desc"))
 
 export function subscribeToPostChange(postID, callback) {
     return onSnapshot(postRef(postID), callback);
@@ -39,8 +39,9 @@ export function fetchPostIDList() {
         .then(querySnapshot => querySnapshot.docs.map(doc => (doc.id)))
 }
 
-export function subscribeToPostIDList(callback) {
-    return onSnapshot(postQuery, (querySnapshot) => {
+export function subscribeToPostIDList(callback, campus = null) {
+    let q = campus ? postQueryForCampus(campus) : postQuery
+    return onSnapshot(q, (querySnapshot) => {
         const postIDList = [];
         querySnapshot.forEach((doc) => {
             postIDList.push(doc.id);
