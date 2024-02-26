@@ -1,13 +1,18 @@
 import React from "react";
-import {Pressable, StyleSheet, Text} from "react-native";
+import {Pressable, StyleSheet} from "react-native";
 import {colors} from "../assets/colors";
 import {useNavigation} from "@react-navigation/native";
+import {MaterialCommunityIcons} from "@expo/vector-icons";
 
 export const GoBackButton = () => {
     const navigation = useNavigation()
     return(
-        <Pressable onPress={() => navigation.goBack()} style={styles.container}>
-            <Text style={styles.text}>Go back</Text>
+        <Pressable onPress={() => navigation.goBack()}>
+            <MaterialCommunityIcons
+                name={"chevron-left"}
+                color={colors.icons}
+                size={30}
+            />
         </Pressable>
     )
 }
