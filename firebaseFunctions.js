@@ -71,10 +71,11 @@ export function commentOnPost(postID, username, comment) {
     });
 }
 
-async function addPost(content, creator, eventInfo = null) {
+async function addPost(content, creator, campus, eventInfo = null) {
     let post = {
         content,
         creator,
+        campus,
         timestamp: serverTimestamp()
     }
     if(eventInfo) post = {...post, eventInfo}
@@ -83,10 +84,10 @@ async function addPost(content, creator, eventInfo = null) {
     return ref.id
 }
 
-export function addTextPost(content, creator) {
-    return addPost(content, creator)
+export function addTextPost(content, creator, campus) {
+    return addPost(content, creator, campus)
 }
 
-export function addEventPost(content, creator, title, startDate, endDate) {
-    return addPost(content, creator, {title, startDate, endDate})
+export function addEventPost(content, creator, campus, title, startDate, endDate) {
+    return addPost(content, creator, campus, {title, startDate, endDate})
 }

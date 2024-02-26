@@ -9,10 +9,11 @@ import {fetchUserProfile} from "../services/UserAPI";
 import DateTimePicker from "react-native-ui-datepicker/src/DateTimePicker";
 import dayjs from "dayjs";
 import {addEventPost, addTextPost} from "../firebaseFunctions";
+import {useCampus} from "../services/CampusProvider";
 
 export const NewPost = ({navigation}) => {
-
   const {currentUser} = useUser()
+  const { selectedCampus } = useCampus();
   const [creatingEvent, setCreatingEvent] = useState(false)
   const [postContent, setPostContent] = useState('')
   const [user, setUser] = useState(null);
@@ -33,10 +34,11 @@ export const NewPost = ({navigation}) => {
 
   function onPost() {
     if(creatingEvent)
-      addEventPost(postContent, currentUser.username, eventTitle, startDate.toDate(), endDate.toDate())
+      addEventPost(postContent, currentUser.username, selectedCampus.name,
+          eventTitle, startDate.toDate(), endDate.toDate())
           .then(onPosted)
     else
-      addTextPost(postContent, currentUser.username)
+      addTextPost(postContent, currentUser.username, selectedCampus.name)
           .then(onPosted)
   }
 
