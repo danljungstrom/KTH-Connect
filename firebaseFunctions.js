@@ -4,7 +4,7 @@ import {
     collection,
     doc,
     getDocs,
-    onSnapshot,
+    onSnapshot, serverTimestamp, setDoc,
     updateDoc
 } from "firebase/firestore";
 import {db} from "./config/firebaseConfig";
@@ -50,4 +50,24 @@ export function commentOnPost(postID, username, comment) {
             date: Date()
         })
     });
+}
+
+async function addPost(content, creator, eventInfo = null) {
+    let post = {
+        content,
+        creator,
+        timestamp: serverTimestamp()
+    }
+    if(eventInfo) post = {...post, eventInfo}
+    let ref = doc(collection(db, "Posts"));
+    await setDoc(ref, post)
+    return ref.id
+}
+
+export function addTextPost(content, creator) {
+    return addPost(content, creator)
+}
+
+export function addEventPost(content, creator, title, startDate, endDate) {
+    return addPost(content, creator, {title, startDate, endDate})
 }

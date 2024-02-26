@@ -10,6 +10,7 @@ import {ActionButton} from "../components/ActionButton";
 import {fetchUserProfile} from "../services/UserAPI";
 import DateTimePicker from "react-native-ui-datepicker/src/DateTimePicker";
 import dayjs from "dayjs";
+import {addEventPost, addTextPost} from "../firebaseFunctions";
 
 export const NewPost = ({navigation}) => {
 
@@ -32,20 +33,17 @@ export const NewPost = ({navigation}) => {
     fetchUserData();
   }, []);
 
-  function addPost(post) {
-    addDoc(collection(db, "Posts"), post).then(() => {navigation.push('PostConfirmation', {post})})
+  function onPost() {
+    if(creatingEvent)
+      addEventPost(postContent, currentUser.username, eventTitle, startDate.toDate(), endDate.toDate())
+          .then(onPosted)
+    else
+      addTextPost(postContent, currentUser.username)
+          .then(onPosted)
   }
 
-  function onPost() {
-    const post = {
-      content: postContent,
-      creator: currentUser.username
-    }
-    if(creatingEvent)
-      addPost({...post, eventInfo: {title: eventTitle, startDate: startDate.toDate(), endDate: endDate.toDate()}})
-    else
-      addPost(post)
-
+  function onPosted(postID) {
+    navigation.push('PostConfirmation', {postID})
   }
 
   function onCancel() {

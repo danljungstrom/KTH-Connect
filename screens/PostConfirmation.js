@@ -6,7 +6,7 @@ import {Post} from "../components/Post";
 import {ActionButton} from "../components/ActionButton";
 
 export const PostConfirmation = ({route, navigation}) => {
-    const post = route.params.post
+    const postID = route.params.postID
 
     return(
         <ScrollView contentContainerStyle={styles.container}>
@@ -15,7 +15,11 @@ export const PostConfirmation = ({route, navigation}) => {
             </Text>
             <Post
                 shownInFeed={false}
-                post={post}
+                showLikeButton={false}
+                showAttendButton={false}
+                showCommentButton={false}
+                showComments={false}
+                postID={postID}
             />
             <ActionButton text="Return" onPress={() => navigation.navigate("Main")}/>
         </ScrollView>
