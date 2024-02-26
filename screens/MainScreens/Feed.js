@@ -21,6 +21,7 @@ export const Feed = () => {
           postID={postID}
           showLikeButton={true}
           showCommentButton={true}
+          showAttendButton={true}
         />)}
         <View style={{height: 100}}></View>
     </ScrollView>

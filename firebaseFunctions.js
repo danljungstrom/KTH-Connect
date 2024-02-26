@@ -21,3 +21,15 @@ export function fetchPostIDList() {
     return getDocs(collection(db, 'Posts'))
         .then(querySnapshot => querySnapshot.docs.map(doc => (doc.id)))
 }
+
+export function attendEvent(postID, username) {
+    return updateDoc(doc(db, "Posts", postID), {
+        "eventInfo.attending": arrayUnion(username)
+    });
+}
+
+export function unAttendEvent(postID, username) {
+    return updateDoc(doc(db, "Posts", postID), {
+        "eventInfo.attending": arrayRemove(username)
+    });
+}

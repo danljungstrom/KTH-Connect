@@ -11,28 +11,25 @@ import {useNavigation} from "@react-navigation/native";
 import {Comment} from "./Comment";
 import dayjs from "dayjs";
 import {useUser} from "../services/UserProvider";
-import {likePost, subscribeToPostChange, unlikePost} from "../firebaseFunctions";
+import {attendEvent, likePost, subscribeToPostChange, unAttendEvent, unlikePost} from "../firebaseFunctions";
 
 export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, showComments, showAttendButton}) => {
     const navigation = useNavigation()
-    const attending = false
-    const [user, setUser] = useState(null);
     const { currentUser } = useUser();
+
     const [post, setPost] = useState(false)
+    const [author, setAuthor] = useState(null)
+
     const likeCount = post && post.likes ? post.likes.length : 0
     const commentCount = post && post.comments ? post.comments.length : 0
     const liked = post && post.likes &&
         post.likes.find(item => item === currentUser.username)
+    const attending = post && post.eventInfo && post.eventInfo.attending &&
+        post.eventInfo.attending.find(item => item === currentUser.username)
 
     useEffect(() => {
-        if(post && post.creator) {
-            const fetchUserData = async () => {
-                const userData = await fetchUserProfile(post.creator);
-                setUser(userData);
-            };
-
-            fetchUserData();
-        }
+        if(post && post.creator)
+            fetchUserProfile(post.creator).then(setAuthor)
       }, [post]);
 
     useEffect(() => {
@@ -48,8 +45,11 @@ export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, sh
             await likePost(postID, currentUser.username)
     }
 
-    function onAttend() {
-        // TODO add logged in user to post.eventInfo.attending in firebase
+    async function onAttend() {
+        if (attending)
+            await unAttendEvent(postID, currentUser.username)
+        else
+            await attendEvent(postID, currentUser.username)
     }
 
     function navigateToPost() {
@@ -66,7 +66,7 @@ export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, sh
             <Pressable style={shownInFeed ? styles.post : {...styles.post, ...styles.postOnPostPage}}
                        onPress={navigateToPost}>
 
-                {user && <Author user={user}/>}
+                {author && <Author user={author}/>}
 
                 <View style={styles.contentContainer}>
                     {post.image &&

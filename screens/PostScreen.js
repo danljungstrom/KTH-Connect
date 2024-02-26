@@ -21,6 +21,7 @@ export const PostScreen = ({route, navigation}) => {
                 showLikeButton={true}
                 showCommentButton={false}
                 showComments={true}
+                showAttendButton={true}
             />
         </ScrollView>
     );
