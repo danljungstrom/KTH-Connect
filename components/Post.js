@@ -11,18 +11,18 @@ import {useNavigation} from "@react-navigation/native";
 import {Comment} from "./Comment";
 import dayjs from "dayjs";
 import {useUser} from "../services/UserProvider";
-import {db} from "../config/firebaseConfig";
-import {updateDoc, doc, arrayUnion, arrayRemove, onSnapshot} from 'firebase/firestore';
+import {likePost, subscribeToPostChange, unlikePost} from "../firebaseFunctions";
 
 export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, showComments, showAttendButton}) => {
     const navigation = useNavigation()
     const attending = false
     const [user, setUser] = useState(null);
     const { currentUser } = useUser();
-    const [,forceReRender] = useState();
     const [post, setPost] = useState(false)
     const likeCount = post && post.likes ? post.likes.length : 0
     const commentCount = post && post.comments ? post.comments.length : 0
+    const liked = post && post.likes &&
+        post.likes.find(item => item === currentUser.username)
 
     useEffect(() => {
         if(post && post.creator) {
@@ -36,28 +36,16 @@ export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, sh
       }, [post]);
 
     useEffect(() => {
-        onSnapshot(doc(db, 'Posts', postID), (doc) => {
+        subscribeToPostChange(postID, (doc) => {
             setPost(doc.data())
         });
     }, [])
 
-    function liked() {
-        return post.likes && post.likes.find(item => item === currentUser.username)
-    }
-
     async function onLike() {
-        let postRef = doc(db, "Posts", postID)
-        if(liked()) { // unlike
-            await updateDoc(postRef, {
-                likes: arrayRemove(currentUser.username)
-            });
-        }
-        else { // like
-            await updateDoc(postRef, {
-                likes: arrayUnion(currentUser.username)
-            });
-        }
-        forceReRender(null)
+        if(liked)
+            await unlikePost(postID, currentUser.username)
+        else
+            await likePost(postID, currentUser.username)
     }
 
     function onAttend() {
@@ -96,7 +84,7 @@ export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, sh
 
                 <View style={styles.buttonContainer}>
                     {!post.eventInfo && showLikeButton &&
-                        <LikeButton onPress={onLike} count={likeCount} liked={liked()}/>}
+                        <LikeButton onPress={onLike} count={likeCount} liked={liked}/>}
                     {!post.eventInfo && showCommentButton &&
                         <CommentButton onPress={navigateToPost} count={commentCount}/>}
                 </View>
