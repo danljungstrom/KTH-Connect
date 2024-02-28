@@ -23,6 +23,7 @@ export const NewPost = ({navigation}) => {
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
   const [eventTitle, setEventTitle] = useState()
+  const [image, setImage] = useState(null)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -36,7 +37,7 @@ export const NewPost = ({navigation}) => {
   function onPost() {
     if(creatingEvent)
       addEventPost(postContent, currentUser.username, selectedCampus.name,
-          eventTitle, startDate.toDate(), endDate.toDate())
+          eventTitle, startDate.toDate(), endDate.toDate(), image)
           .then(onPosted)
     else
       addTextPost(postContent, currentUser.username, selectedCampus.name)
@@ -73,7 +74,8 @@ export const NewPost = ({navigation}) => {
         {creatingEvent && <View>
           <View style={styles.fullWidth}>
             <ImageUploader width={Dimensions.get('window').width}
-                           uploadInstruction={"Select Event Cover"}/>
+                           uploadInstruction={"Select Event Cover"}
+                           onImageChanged={setImage}/>
           </View>
           <TextInput placeholder={"Add event title..."}
                      placeholderTextColor={colors.lowOpacityText}
