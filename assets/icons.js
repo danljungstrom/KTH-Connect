@@ -11,6 +11,7 @@ import { faLocationDot } from '@fortawesome/free-solid-svg-icons/faLocationDot'
 import { faLocationDot as faLocationDotFilled } from '@fortawesome/free-solid-svg-icons/faLocationDot'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { home } from '@expo/vector-icons/MaterialCommunityIcons/';
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export const heartIcon = faHeart
 export const heartIconFilled = faHeartFilled
@@ -24,3 +25,4 @@ export const profileIconFilled = faUserFilled
 export const campusIcon = faLocationDot
 export const campusIconFilled = faLocationDotFilled
 export const plusIcon = faPlus
+export const close = faXmark

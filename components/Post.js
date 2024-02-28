@@ -12,6 +12,7 @@ import {Comment} from "./Comment";
 import dayjs from "dayjs";
 import {useUser} from "../services/UserProvider";
 import {attendEvent, likePost, subscribeToPostChange, unAttendEvent, unlikePost} from "../firebaseFunctions";
+import ErrorBoundary from "react-native-error-boundary";
 
 export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, showComments, showAttendButton, showCampus}) => {
     const navigation = useNavigation()
@@ -70,10 +71,12 @@ export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, sh
 
                 <View style={styles.contentContainer}>
                     {post.image &&
-                    <ResizableImage
-                        image={post.image}
-                        width={Dimensions.get('window').width}
-                        style={styles.image}/>}
+                        <ErrorBoundary FallbackComponent={<Text>Error loading image</Text>}>
+                            <ResizableImage
+                                image={post.image}
+                                width={Dimensions.get('window').width}
+                                style={styles.image}/>
+                        </ErrorBoundary>}
                     {post.eventInfo && <Text style={styles.eventTitle}>{post.eventInfo.title}</Text>}
                     {post.eventInfo &&
                         <Text style={styles.eventDates}>
