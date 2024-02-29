@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text, Pressable, TextInput} from 'react-native';
+import {StyleSheet, View, Text, Pressable, TextInput, Dimensions} from 'react-native';
 import { CampusSelector } from '../components/CampusSelector';
 import {useUser} from "../services/UserProvider";
 import {colors} from "../assets/colors";
@@ -10,6 +10,7 @@ import DateTimePicker from "react-native-ui-datepicker/src/DateTimePicker";
 import dayjs from "dayjs";
 import {addEventPost, addTextPost} from "../firebaseFunctions";
 import {useCampus} from "../services/CampusProvider";
+import {ImageUploader} from "../components/ImageUploader";
 
 export const NewPost = ({navigation}) => {
   const {currentUser} = useUser()
@@ -22,6 +23,7 @@ export const NewPost = ({navigation}) => {
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
   const [eventTitle, setEventTitle] = useState()
+  const [image, setImage] = useState(null)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -35,7 +37,7 @@ export const NewPost = ({navigation}) => {
   function onPost() {
     if(creatingEvent)
       addEventPost(postContent, currentUser.username, selectedCampus.name,
-          eventTitle, startDate.toDate(), endDate.toDate())
+          eventTitle, startDate.toDate(), endDate.toDate(), image)
           .then(onPosted)
     else
       addTextPost(postContent, currentUser.username, selectedCampus.name)
@@ -70,6 +72,11 @@ export const NewPost = ({navigation}) => {
         {user && <Author user={user}/>}
 
         {creatingEvent && <View>
+          <View style={styles.fullWidth}>
+            <ImageUploader width={Dimensions.get('window').width}
+                           uploadInstruction={"Select Event Cover"}
+                           onImageChanged={setImage}/>
+          </View>
           <TextInput placeholder={"Add event title..."}
                      placeholderTextColor={colors.lowOpacityText}
                      style={styles.titleText}
@@ -173,6 +180,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderBottomWidth: 1,
     rowGap:15
+  },
+  fullWidth: {
+    marginHorizontal: -10,
+    marginVertical: 5
   },
   postInput: {
     color: colors.text
