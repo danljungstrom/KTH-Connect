@@ -1,51 +1,124 @@
-import React, { useEffect, useState} from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, ScrollView, View, Text, Image } from 'react-native';
 import { useUser } from '../../services/UserProvider';
 import { fetchUserProfile } from '../../services/UserAPI';
+import { Post } from '../../components/Post';
+import { subscribeToPostIDList } from '../../firebaseFunctions';
+import { useCampus } from '../../services/CampusProvider';
+import { colors } from "../../assets/colors";
 
-//TODO: Implement
-export const Profile = ({navigation}) => {
+export const Profile = ({ navigation }) => {
   const { currentUser } = useUser();
-  const [ currentUserProfile, setCurrentUserProfile ] = useState(null)
+  const { selectedCampus } = useCampus();
+  const [currentUserProfile, setCurrentUserProfile] = useState(null);
+  const [postIDs, setPostIDs] = useState([]);
+  const [unsubscribe, setUnsubscribeReference] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       const userData = await fetchUserProfile(currentUser.username);
       setCurrentUserProfile(userData);
     };
-    
+
     fetchUserData();
-  }, []);
-     
+
+    // Set up the subscription to the post IDs
+    const unsub = subscribeToPostIDList(setPostIDs, selectedCampus.name);
+    setUnsubscribeReference(() => unsub);
+
+    // Clean up the subscription when the component unmounts
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [currentUser.username, selectedCampus.name]);
+
   return (
-    <>
-      {currentUserProfile && <View style={styles.container}>
-      <Image style={styles.avatar} source={currentUserProfile.image} />
-      <Text style={styles.text}>{currentUserProfile.givenName + " " + currentUserProfile.familyName}</Text>
-      <Text style={styles.text}>{currentUser.username + '@kth.se'}</Text>
-      </View>}
-    </>
+    <ScrollView style={styles.container}>
+      <View style={styles.profileContainer}>
+        {currentUserProfile && (
+          <>
+            <Image style={styles.avatar} source={currentUserProfile.image} />
+            <View style={styles.userInfo}>
+              <Text style={styles.name}>{currentUserProfile.givenName + " " + currentUserProfile.familyName}</Text>
+              <Text style={styles.email}>{currentUser.username + '@kth.se'}</Text>
+            </View>
+          </>
+        )}
+        <Text style={styles.postsTitle}>Posts</Text>
+      </View>
+      <View style={styles.postsContainer}>
+        {postIDs.length > 0 ? (
+          postIDs.map(postID => (
+            <Post
+              shownInFeed={true}
+              key={postID}
+              postID={postID}
+              showLikeButton={true}
+              showCommentButton={true}
+              showAttendButton={true}
+            />
+          ))
+        ) : (
+          <Text style={styles.noPostsText}>No posts yet</Text>
+        )}
+      </View>
+    </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  text: {
-    fontSize: 20,
-    color: 'rgba(123, 163, 191, 1)',
-    margin: 30,
-  },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(1, 25, 52, 1)',
+    backgroundColor: colors.background,
+  },
+  profileContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    padding: 80,
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 100,
-    marginRight: 5,
-    top: 0,
-    left: 0
-},
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    right: 50
+  },
+  userInfo: {
+    marginLeft: 10,
+  },
+  name: {
+    fontSize: 20,
+    color: colors.text,
+    right: 30,
+    top: 10
+  },
+  email: {
+    fontSize: 16,
+    color: 'rgba(128,128,128,128)',
+    right: 30,
+    top: 10
+  },
+  postsTitle: {
+    fontSize: 18,
+    color: colors.text,
+    marginTop: 20,
+    marginBottom: 10,
+    fontWeight: 'bold',
+    right: 125,
+    top: 100,
+    textAlign:'center',
+    textDecorationLine:'underline'
+  },
+ 
+  postsContainer: {
+    paddingHorizontal: 10,
+  },
+  noPostsText: {
+    fontSize: 16,
+    color: colors.text,
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  // ...add any additional styles you need here
 });
+
+export default Profile;
