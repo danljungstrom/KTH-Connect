@@ -3,16 +3,13 @@ import { StyleSheet, ScrollView, View, Text, Image } from 'react-native';
 import { useUser } from '../../services/UserProvider';
 import { fetchUserProfile } from '../../services/UserAPI';
 import { Post } from '../../components/Post';
-import { subscribeToPostIDList } from '../../firebaseFunctions';
-import { useCampus } from '../../services/CampusProvider';
+import { usePosts } from '../../services/PostProvider';
 import { colors } from "../../assets/colors";
 
 export const Profile = ({ navigation }) => {
   const { currentUser } = useUser();
-  const { selectedCampus } = useCampus();
+  const { posts } = usePosts();
   const [currentUserProfile, setCurrentUserProfile] = useState(null);
-  const [postIDs, setPostIDs] = useState([]);
-  const [unsubscribe, setUnsubscribeReference] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -21,16 +18,7 @@ export const Profile = ({ navigation }) => {
     };
 
     fetchUserData();
-
-    // Set up the subscription to the post IDs
-    const unsub = subscribeToPostIDList(setPostIDs, selectedCampus.name);
-    setUnsubscribeReference(() => unsub);
-
-    // Clean up the subscription when the component unmounts
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
-  }, [currentUser.username, selectedCampus.name]);
+  }, [currentUser.username]);
 
   return (
     <ScrollView style={styles.container}>
@@ -47,12 +35,12 @@ export const Profile = ({ navigation }) => {
         <Text style={styles.postsTitle}>Posts</Text>
       </View>
       <View style={styles.postsContainer}>
-        {postIDs.length > 0 ? (
-          postIDs.map(postID => (
+        {posts.length > 0 ? (
+          posts.filter(post => post.creator === currentUser.username).map(post => (
             <Post
               shownInFeed={true}
-              key={postID}
-              postID={postID}
+              key={post.id}
+              postID={post.id}
               showLikeButton={true}
               showCommentButton={true}
               showAttendButton={true}

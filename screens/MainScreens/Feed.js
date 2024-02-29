@@ -2,29 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, View, Text } from 'react-native';
 import { Post } from '../../components/Post';
 import { colors } from "../../assets/colors";
-import {subscribeToPostIDList} from "../../firebaseFunctions";
-import {useCampus} from "../../services/CampusProvider";
+import { usePosts } from "../../services/PostProvider";
 
 export const Feed = () => {
-  const { selectedCampus } = useCampus();
-  const [postIDs, setPostIDs] = useState([]);
-  const [unsubscribe, setUnsubscribeReference] = useState(null)
-
-  useEffect(() => {
-    if(unsubscribe)
-      unsubscribe()
-    const unsub = subscribeToPostIDList(setPostIDs, selectedCampus.name)
-    setUnsubscribeReference(() => unsub)
-  }, [selectedCampus]);
+  const { posts } = usePosts();
 
   return (
     <ScrollView style={styles.container}>
-      {postIDs.length > 0 ?
-          postIDs.map(postID =>
+      {posts.length > 0 ?
+          posts.map(post =>
             <Post
               shownInFeed={true}
-              key={postID}
-              postID={postID}
+              key={post.timestamp}
+              postID={post.id}
               showLikeButton={true}
               showCommentButton={true}
               showAttendButton={true}

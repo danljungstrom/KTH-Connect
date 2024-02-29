@@ -8,6 +8,8 @@ export const CampusSelector = ({ bottom }) => {
   const { selectedCampus, setSelectedCampus, campuses } = useCampus();
   const [ modalVisible, setModalVisible ] = useState(false);
 
+  if(!campuses || !selectedCampus) return null
+
   const toggleModal = () => setModalVisible(!modalVisible);
   const chooseCampus = (campus) => {
     setSelectedCampus(campus.id);
@@ -29,16 +31,16 @@ export const CampusSelector = ({ bottom }) => {
 
   return (
     <View style={[styles.container, { bottom: bottom ? 0 : 70 }]}>
-      <TouchableOpacity onPress={toggleModal} style={styles.selector}>
+      {selectedCampus && <TouchableOpacity onPress={toggleModal} style={styles.selector}>
         <Text style={styles.campusText}>{selectedCampus.name}</Text>
         <MaterialCommunityIcons
           name='chevron-up' 
           size={24}
           color={colors.icons}
         />
-      </TouchableOpacity>
+      </TouchableOpacity>}
 
-      <Modal
+      {selectedCampus && <Modal
         animationType="fade"
         transparent={true}
         visible={modalVisible}
@@ -69,7 +71,7 @@ export const CampusSelector = ({ bottom }) => {
             />
           </View>
         </TouchableOpacity>
-      </Modal>
+      </Modal>}
     </View>
   );
 };

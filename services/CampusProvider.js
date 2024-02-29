@@ -29,7 +29,7 @@ export const CampusProvider = ({ children }) => {
 
   useEffect(() => {
     if(currentUser && currentUser.hasOwnProperty('selectedCampus')){
-      setCurrentCampus(campuses[currentUser.selectedCampus]);
+      setCurrentCampus(campuses[currentUser.selectedCampus-1]);
     }
   }, [currentUser]);
 

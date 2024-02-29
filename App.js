@@ -12,6 +12,7 @@ import { NewConversation } from './screens/NewConversation';
 import { Conversation } from './screens/Conversation';
 import { UserProvider } from './services/UserProvider';
 import { CampusProvider } from './services/CampusProvider';
+import { PostProvider } from './services/PostProvider';
 
 const Stack = createNativeStackNavigator();
 StatusBar.setBarStyle('light-content');
@@ -20,18 +21,20 @@ export default function App() {
   return (
     <UserProvider>
       <CampusProvider>
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Login" component={Login}/>
-            <Stack.Screen name="ChooseCampus" component={ChooseCampus}/>
-            <Stack.Screen name="Main" component={Main}/>
-            <Stack.Screen name="NewPost" component={NewPost}/>
-            <Stack.Screen name="NewConversation" component={NewConversation}/>
-            <Stack.Screen name="Conversation" component={Conversation}/>
-            <Stack.Screen name="PostScreen" component={PostScreen}/>
-            <Stack.Screen name="PostConfirmation" component={PostConfirmation}/>
-          </Stack.Navigator>
-        </NavigationContainer>
+        <PostProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="Login" component={Login}/>
+              <Stack.Screen name="ChooseCampus" component={ChooseCampus}/>
+              <Stack.Screen name="Main" component={Main}/>
+              <Stack.Screen name="NewPost" component={NewPost}/>
+              <Stack.Screen name="NewConversation" component={NewConversation}/>
+              <Stack.Screen name="Conversation" component={Conversation}/>
+              <Stack.Screen name="PostScreen" component={PostScreen}/>
+              <Stack.Screen name="PostConfirmation" component={PostConfirmation}/>
+            </Stack.Navigator>
+          </NavigationContainer>
+        </PostProvider>
       </CampusProvider>
     </UserProvider>
   );

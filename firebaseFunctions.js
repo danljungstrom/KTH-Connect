@@ -7,10 +7,12 @@ import {
     onSnapshot, serverTimestamp, setDoc,
     updateDoc,
     query,
-    orderBy, where
+    orderBy, where,
+    limit
 } from "firebase/firestore";
 import {db} from "./config/firebaseConfig";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { fetchUserProfile } from "./services/UserAPI";
 
 const postsRef = collection(db, "Posts")
 const postQuery = query(postsRef, orderBy("timestamp", "desc"))
@@ -122,3 +124,38 @@ async function uploadImageAsync(uri) {
 
     return await getDownloadURL(fileRef);
 }
+
+export const subscribeToConversations = (username, updateConversationsCallback) => {
+    const conversationsRef = collection(db, 'Conversations');
+    const q = query(conversationsRef, where('users', 'array-contains', username));
+    
+    return onSnapshot(q, (querySnapshot) => {
+        querySnapshot.docs.forEach((doc) => {
+            const otherUsername = doc.data().users.find(u => u !== username);
+            
+            fetchUserProfile(otherUsername).then((otherUser) => {
+                const messagesRef = collection(db, 'Conversations', doc.id, 'messages');
+                const lastMessageQuery = query(messagesRef, orderBy('timestamp', 'desc'), limit(1));
+
+                onSnapshot(lastMessageQuery, (messageSnapshot) => {
+                    let latestMessage = null;
+                    if (!messageSnapshot.empty) {
+                        const latestMessageData = messageSnapshot.docs[0].data();
+                        latestMessage = {
+                            ...latestMessageData,
+                            timestamp: latestMessageData.timestamp?.toDate(),
+                        };
+                    }
+
+                    const conversationWithLatestMessage = {
+                        id: doc.id,
+                        otherUser,
+                        latestMessage,
+                    };
+
+                    updateConversationsCallback(conversationWithLatestMessage);
+                });
+            });
+        });
+    });
+};

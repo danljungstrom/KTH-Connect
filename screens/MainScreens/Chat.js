@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, Pressable, ScrollView } from 'react-native';
-import { fetchUserProfile } from '../../services/UserAPI';
-import { db } from '../../config/firebaseConfig';
-import { collection, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
+import { subscribeToConversations } from '../../firebaseFunctions';
 import { useUser } from '../../services/UserProvider';
 import { colors } from "../../assets/colors";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -12,76 +10,18 @@ export const Chat = ({navigation}) => {
   const [conversations, setConversations] = useState([]);
 
   useEffect(() => {
-    const conversationsRef = collection(db, 'Conversations');
-    const q = query(conversationsRef, where('users', 'array-contains', currentUser.username));
-  
-    const unsubscribeConversations = onSnapshot(q, async (querySnapshot) => {
-      const profilePromises = [];
-  
-      querySnapshot.forEach((doc) => {
-        const otherUsernames = doc.data().users.filter(username => username !== currentUser.username);
-        otherUsernames.forEach(otherUsername => {
-          profilePromises.push(fetchUserProfile(otherUsername));
+    const unsubscribe = subscribeToConversations(currentUser.username, (updatedConversation) => {
+        setConversations(prevConversations => {
+            const index = prevConversations.findIndex(c => c.id === updatedConversation.id);
+            if (index > -1) {
+                return prevConversations.map((c, i) => i === index ? updatedConversation : c);
+            } else {
+                return [...prevConversations, updatedConversation];
+            }
         });
-      });
-  
-      const userProfiles = await Promise.all(profilePromises);
-
-      let conversationsWithProfiles = querySnapshot.docs.map((doc, index) => {
-        return {
-          id: doc.id,
-          otherUser: userProfiles[index],
-          latestMessage: null,
-        };
-      });
-  
-      conversationsWithProfiles.forEach((convo, index) => {
-        const messagesRef = collection(db, 'Conversations', convo.id, 'messages');
-        const lastMessageQuery = query(messagesRef, orderBy('timestamp', 'desc'), limit(1));
-  
-        const unsubscribeMessage = onSnapshot(lastMessageQuery, (messageSnapshot) => {
-          if (!messageSnapshot.empty) {
-            const latestMessageData = messageSnapshot.docs[0].data();
-            setConversations(prevConversations => {
-              const updatedConversations = prevConversations.map(conversation => {
-                if (conversation.id === convo.id) {
-                  return {
-                    ...conversation,
-                    latestMessage: {
-                      ...latestMessageData,
-                      timestamp: latestMessageData.timestamp?.toDate(),
-                    },
-                  };
-                }
-                return conversation;
-              });
-  
-              updatedConversations.sort((a, b) => {
-                const dateA = a.latestMessage?.timestamp || 0;
-                const dateB = b.latestMessage?.timestamp || 0;
-                return dateB - dateA;
-              });
-  
-              return updatedConversations;
-            });
-          }
-        });
-  
-        conversationsWithProfiles[index].unsubscribeMessage = unsubscribeMessage;
-      });
-  
-      setConversations(conversationsWithProfiles);
     });
-  
-    return () => {
-      unsubscribeConversations();
-      conversations.forEach(convo => {
-        if (convo.unsubscribeMessage) {
-          convo.unsubscribeMessage();
-        }
-      });
-    };
-  }, [currentUser.username]);
+    return () => unsubscribe?.();
+}, [currentUser.username]);
 
   const formatDate = (timestamp) => {
     if (!timestamp) return '';
@@ -99,7 +39,7 @@ export const Chat = ({navigation}) => {
       return messageDate.toLocaleDateString('en-US', { weekday: 'long' }) + 
       ', ' + messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
     } else {
-      return messageDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' }) + 
+      return messageDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) + 
       ', ' + messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
     }
   }

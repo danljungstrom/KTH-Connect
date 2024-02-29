@@ -11,16 +11,17 @@ import {useNavigation} from "@react-navigation/native";
 import {Comment} from "./Comment";
 import dayjs from "dayjs";
 import {useUser} from "../services/UserProvider";
-import {attendEvent, likePost, subscribeToPostChange, unAttendEvent, unlikePost} from "../firebaseFunctions";
+import {attendEvent, likePost, unAttendEvent, unlikePost} from "../firebaseFunctions";
 import ErrorBoundary from "react-native-error-boundary";
+import {usePosts} from "../services/PostProvider";
 
 export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, showComments, showAttendButton, showCampus}) => {
     const navigation = useNavigation()
     const { currentUser } = useUser();
-
-    const [post, setPost] = useState(false)
+    const { posts } = usePosts();
     const [author, setAuthor] = useState(null)
 
+    const post = posts.find(p => p.id === postID)
     const likeCount = post && post.likes ? post.likes.length : 0
     const commentCount = post && post.comments ? post.comments.length : 0
     const liked = post && post.likes &&
@@ -32,12 +33,6 @@ export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, sh
         if(post && post.creator)
             fetchUserProfile(post.creator).then(setAuthor)
       }, [post]);
-
-    useEffect(() => {
-        subscribeToPostChange(postID, (doc) => {
-            setPost(doc.data())
-        });
-    }, [])
 
     async function onLike() {
         if(liked)
