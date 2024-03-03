@@ -5,5 +5,5 @@ export const ResizableImage = ({image, width, style}) => {
 
     const aspectRatio = image.width / image.height
 
-    return <Image source={image.source} style={{...style, width: width, height: width / aspectRatio}}/>;
+    return <Image source={{uri: image.source}} style={{...style, width: width, height: width / aspectRatio}}/>;
 }

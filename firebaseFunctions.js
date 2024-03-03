@@ -84,7 +84,7 @@ async function addPost(content, creator, campus, eventInfo = null, image = null)
     }
     if(eventInfo) post = {...post, eventInfo}
     if(image) {
-        let url = 'TODO' //await uploadImageAsync(image.source.uri)
+        let url = await uploadImageAsync(image.source.uri, creator)
         post = {...post, image: {source: url, width: image.width, height: image.height}}
     }
     let ref = doc(collection(db, "Posts"));
@@ -92,8 +92,8 @@ async function addPost(content, creator, campus, eventInfo = null, image = null)
     return ref.id
 }
 
-export function addTextPost(content, creator, campus) {
-    return addPost(content, creator, campus)
+export function addTextPost(content, creator, campus, image) {
+    return addPost(content, creator, campus, null, image)
 }
 
 export function addEventPost(content, creator, campus, title, startDate, endDate, image) {
@@ -101,7 +101,7 @@ export function addEventPost(content, creator, campus, title, startDate, endDate
 }
 
 // From https://github.com/expo/examples/blob/master/with-firebase-storage-upload/App.js
-async function uploadImageAsync(uri) {
+async function uploadImageAsync(uri, creator) {
     const blob = await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.onload = function () {
@@ -116,7 +116,7 @@ async function uploadImageAsync(uri) {
         xhr.send(null);
     });
 
-    const fileRef = ref(getStorage(), 'images');
+    const fileRef = ref(getStorage(), 'images/' + creator + Date.now());
     const result = await uploadBytes(fileRef, blob);
 
     // We're done with the blob, close and release it

@@ -40,7 +40,7 @@ export const NewPost = ({navigation}) => {
           eventTitle, startDate.toDate(), endDate.toDate(), image)
           .then(onPosted)
     else
-      addTextPost(postContent, currentUser.username, selectedCampus.name)
+      addTextPost(postContent, currentUser.username, selectedCampus.name, image)
           .then(onPosted)
   }
 
@@ -71,12 +71,13 @@ export const NewPost = ({navigation}) => {
       <View style={styles.postContainer}>
         {user && <Author user={user}/>}
 
+        <View style={styles.fullWidth}>
+          <ImageUploader width={Dimensions.get('window').width}
+                         uploadInstruction={creatingEvent ? "Select Event Cover" : "Upload an image"}
+                         onImageChanged={setImage}/>
+        </View>
+
         {creatingEvent && <View>
-          <View style={styles.fullWidth}>
-            <ImageUploader width={Dimensions.get('window').width}
-                           uploadInstruction={"Select Event Cover"}
-                           onImageChanged={setImage}/>
-          </View>
           <TextInput placeholder={"Add event title..."}
                      placeholderTextColor={colors.lowOpacityText}
                      style={styles.titleText}
