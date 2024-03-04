@@ -8,20 +8,20 @@ const PostContext = createContext();
 export const PostProvider = ({ children }) => {
   const { selectedCampus } = useCampus();
   const [campusPosts, setCampusPosts] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!selectedCampus) {
-        console.log('selectedCampus är undefined eller null');
-        return;
+      setIsLoading(false);
+      return;
     }
 
-    if (campusPosts[selectedCampus?.id]) {
-        setIsLoading(false);
-        return;
+    if (campusPosts[selectedCampus.id]) {
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
     }
 
-    setIsLoading(true);
     const postsRef = collection(db, 'Posts');
     const q = query(postsRef, where('campus', '==', selectedCampus.name), orderBy('timestamp', 'desc'));
 
@@ -31,10 +31,12 @@ export const PostProvider = ({ children }) => {
       setIsLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, [selectedCampus]);
 
-  const posts = campusPosts[selectedCampus?.id] || [];
+  const posts = selectedCampus ? campusPosts[selectedCampus.id] || [] : [];
   
   return (
     <PostContext.Provider value={{ posts, isLoading }}>

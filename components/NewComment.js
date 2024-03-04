@@ -27,7 +27,7 @@ export const NewComment = ({postID}) => {
 const styles = StyleSheet.create({
     input: {
         backgroundColor:colors.inputChatBox,
-        padding:10,
-        borderRadius:5
+        padding: 10,
+        borderRadius: 10
     }
 });

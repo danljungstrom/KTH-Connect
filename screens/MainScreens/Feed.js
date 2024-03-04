@@ -3,9 +3,11 @@ import { StyleSheet, ScrollView, View, Text } from 'react-native';
 import { Post } from '../../components/Post';
 import { colors } from "../../assets/colors";
 import { usePosts } from "../../services/PostProvider";
+import { useCampus } from "../../services/CampusProvider";
 
 export const Feed = () => {
   const { posts } = usePosts();
+  const { selectedCampus } = useCampus();
 
   return (
     <ScrollView style={styles.container}>
@@ -13,14 +15,14 @@ export const Feed = () => {
           posts.map(post =>
             <Post
               shownInFeed={true}
-              key={post.timestamp}
+              key={post.id}
               postID={post.id}
               showLikeButton={true}
               showCommentButton={true}
               showAttendButton={true}
             />)
         :
-          <Text style={styles.text}>No posts yet</Text>
+          <Text style={styles.text}>Campus {selectedCampus.name.split('KTH ')[1]} doesn't have any posts yet</Text>
       }
         <View style={{height: 100}}></View>
     </ScrollView>

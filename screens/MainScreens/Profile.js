@@ -4,11 +4,13 @@ import { useUser } from '../../services/UserProvider';
 import { fetchUserProfile } from '../../services/UserAPI';
 import { Post } from '../../components/Post';
 import { usePosts } from '../../services/PostProvider';
+import { useCampus } from '../../services/CampusProvider';
 import { colors } from "../../assets/colors";
 
 export const Profile = ({ navigation }) => {
   const { currentUser } = useUser();
   const { posts } = usePosts();
+  const { selectedCampus } = useCampus();
   const [currentUserProfile, setCurrentUserProfile] = useState(null);
 
   useEffect(() => {
@@ -34,8 +36,8 @@ export const Profile = ({ navigation }) => {
         )}
         <Text style={styles.postsTitle}>Posts</Text>
       </View>
-      <View style={styles.postsContainer}>
-        {posts.length > 0 ? (
+      <ScrollView style={styles.postsContainer}>
+        {posts.filter(post => post.creator === currentUser.username).length > 0 ? (
           posts.filter(post => post.creator === currentUser.username).map(post => (
             <Post
               shownInFeed={true}
@@ -47,9 +49,9 @@ export const Profile = ({ navigation }) => {
             />
           ))
         ) : (
-          <Text style={styles.noPostsText}>No posts yet</Text>
+          <Text style={styles.noPostsText}>You haven't posted anything to {selectedCampus.name.split('KTH ')[1]}</Text>
         )}
-      </View>
+      </ScrollView>
     </ScrollView>
   );
 };
@@ -58,6 +60,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+
   },
   profileContainer: {
     flexDirection: 'row',
@@ -99,6 +102,7 @@ const styles = StyleSheet.create({
  
   postsContainer: {
     paddingHorizontal: 10,
+    paddingBottom: 50,
   },
   noPostsText: {
     fontSize: 16,

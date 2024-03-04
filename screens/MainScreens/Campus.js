@@ -1,17 +1,34 @@
-import React from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Linking } from 'react-native';
 import { useCampus } from '../../services/CampusProvider';
+import { colors } from '../../assets/colors';
+import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 
 export const Campus = () => {
   const { selectedCampus } = useCampus();
+  const mapRef = useRef(null);
 
-  const localMaps =[
-    require('../../assets/exMapFlemingsberg.png'),
-    require('../../assets/exMapKista.png'),
-    require('../../assets/exMapSolna.png'),
-    require('../../assets/exMapSödertälje.png'),
-    require('../../assets/exMapMainCampus.png'),
-  ]
+  const [selectedRegion, setSelectedRegion] = useState();
+  
+  useEffect(() => {
+    const newRegion = {
+      latitude: selectedCampus.geopoint.latitude,
+      longitude: selectedCampus.geopoint.longitude,
+      latitudeDelta: 0.002,
+      longitudeDelta: 0.002,
+    };
+
+    mapRef.current?.animateToRegion(newRegion, 350);
+  }, [selectedCampus]);
+
+  const handleEmailPress = async () => {
+    const url = `mailto:${selectedCampus.email}`;
+    if (await Linking.canOpenURL(url)) {
+      await Linking.openURL(url);
+    } else {
+      console.log('Cannot handle mailto link');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -34,10 +51,26 @@ export const Campus = () => {
 
       <View style={styles.dataRow}>
         <Text style={styles.title}>Email: </Text>
-        <Text style={styles.data}>{selectedCampus.email}</Text>
+        <TouchableOpacity onPress={handleEmailPress}>
+        <Text style={styles.link}>{selectedCampus.email}</Text>
+        </TouchableOpacity>
       </View>
       
-      <Image style={styles.mapPicture} source={localMaps[selectedCampus.id - 1]} />
+      <MapView
+        ref={mapRef}
+        style={styles.map}
+        provider={PROVIDER_DEFAULT}
+        initialRegion={selectedRegion}
+        onRegionChangeComplete={region => setSelectedRegion(region)}
+      >
+        <Marker
+          coordinate={{ latitude: selectedCampus.geopoint.latitude, longitude: selectedCampus.geopoint.longitude }}
+          title={selectedCampus.name}
+          description={selectedCampus.address}
+          tracksViewChanges={false}
+        />
+      </MapView>
+
     </View>
   );
 }
@@ -45,14 +78,14 @@ export const Campus = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(1, 25, 52, 1)',
+    backgroundColor: colors.background,
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     paddingTop: 30,
   },
   headerText: {
     fontSize: 40,
-    color: 'rgba(255, 255, 255, 1)',
+    color: colors.text,
     alignSelf: 'flex-start',
     marginLeft: 15,
     marginBottom: 10,
@@ -60,7 +93,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 1)',
+    color: colors.text,
     alignSelf: 'flex-start',
     marginLeft: 15,
     paddingTop: 5,
@@ -68,18 +101,22 @@ const styles = StyleSheet.create({
   },
   data: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 1)',
+    color: colors.text,
     alignSelf: 'flex-start',
     paddingTop: 5,
-    width: 300 // TODO: Fix this
+    width: 300
   },
   dataRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
- mapPicture: {
-  marginTop: 50, 
-   width: 500,
-   height: 300,
- }
+ map: {
+  marginTop: '20%',
+  width: '100%',
+  height: '50%',
+ },
+ link: {
+  color: colors.lowOpacityText,
+  textDecorationLine: 'underline',
+},
 });

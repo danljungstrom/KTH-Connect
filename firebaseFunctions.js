@@ -28,7 +28,7 @@ export function subscribeToPostChange(postID, callback) {
 export function likePost(postID, username) {
     return updateDoc(postRef(postID), {
         likes: arrayUnion(username)
-    });
+    })
 }
 
 export function unlikePost(postID, username) {

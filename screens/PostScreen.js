@@ -37,20 +37,17 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: colors.background,
         height:'100%',
-        justifyContent: "flex-end"
-    },
-    postContainer: {
-        paddingVertical: 30
+        justifyContent: "flex-end",
     },
     topBar: {
         alignItems: 'center',
         flexDirection: 'row',
-        marginTop: 30,
-        marginBottom: 20,
+        marginTop: 40,
+        marginBottom: -10,
         paddingHorizontal: 10
     },
     newCommentContainer: {
         padding:15,
-        marginBottom:30
+        marginBottom:10
     }
 })
