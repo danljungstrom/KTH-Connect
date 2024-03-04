@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Dimensions, Pressable} from 'react-native';
-import { attendEvent, likePost, unAttendEvent, unlikePost } from "../firebaseFunctions";
+import { StyleSheet, View, Text, Dimensions, Pressable, TextInput} from 'react-native';
+import { attendEvent, likePost, unAttendEvent, unlikePost, editPost, deletePost } from "../firebaseFunctions";
 import { useNavigation } from "@react-navigation/native";
 import { colors } from "../assets/colors";
 import { LikeButton } from './LikeButton';
@@ -13,13 +13,11 @@ import { Comment } from "./Comment";
 import { useUser } from "../services/UserProvider";
 import { usePosts } from "../services/PostProvider";
 import { fetchUserProfile } from '../services/UserAPI';
+import { ConfirmationModal } from './ConfirmationModal';
+import { ConfirmationButtons } from "./ConfirmationButtons";
 import ErrorBoundary from "react-native-error-boundary";
 import dayjs from "dayjs";
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
-dayjs.extend(utc);
-dayjs.extend(timezone);
 dayjs.extend(advancedFormat);
 
 
@@ -28,6 +26,9 @@ export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, sh
     const { currentUser } = useUser();
     const { posts } = usePosts();
     const [author, setAuthor] = useState(null)
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedContent, setEditedContent] = useState('');
 
     const post = posts.find(p => p.id === postID)
     const likeCount = post && post.likes ? post.likes.length : 0
@@ -62,9 +63,8 @@ export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, sh
     }
 
     function timestampToString(timestamp) {
-        const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-
-        return dayjs(date).utc().local().format('YYYY-MM-DD HH:mm');
+        // Add 3600 to convert to UTC+1
+        return dayjs.unix(timestamp.seconds+3600).format('YYYY-MM-DD HH:mm')
     }
 
     const formatDate = (timestamp) => {
@@ -84,6 +84,48 @@ export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, sh
         } else {
           return `${messageDate.format('dddd, MMM D, HH:mm')}`;
         }
+    };
+
+    const showConfirmationModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const handlePostEdit = () => {
+        navigation.navigate("EditPost", { postID: postID })
+    }
+
+    const handlePostDelete = () => {
+        deletePost(postID)
+            .then(() => { 
+                navigation.navigate("Feed");
+                setIsModalVisible(false);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    };
+
+    const handleEditClick = () => {
+        setIsEditing(true);
+        setEditedContent(post.content);
+      };
+
+      const handleSave = () => {
+        if (!editedContent || editedContent.trim() === '' || editedContent === post.content) {
+          setIsEditing(false);
+          return;
+        }
+
+        editPost(postID, editedContent).then(() => {
+          setIsEditing(false);
+        }).catch(error => {
+          console.error(error);
+        });
+      };
+      
+      const handleCancel = () => {
+        setIsEditing(false);
+        setEditedContent(post.content);
       };
 
     return (post &&
@@ -93,7 +135,7 @@ export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, sh
 
             <View style={styles.headerContainer}>
                 {author && <Author user={author}/>}
-                {post.creator === currentUser.username && <EditButtons onPressEdit={navigateToPost}/>}
+                {post.creator === currentUser.username && <EditButtons onPressEdit={handleEditClick} onPressDelete={showConfirmationModal}/>}
             </View>
 
                 <View style={styles.contentContainer}>
@@ -109,7 +151,24 @@ export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, sh
                         <Text style={styles.eventDates}>
                             {timestampToString(post.eventInfo.startDate)} → {timestampToString(post.eventInfo.endDate)}
                         </Text>}
-                    <Text style={styles.content}>{post.content}</Text>
+                {
+                    isEditing ? (
+                        <View>
+                            <TextInput
+                                style={styles.input}
+                                onChangeText={setEditedContent}
+                                value={editedContent}
+                                autoFocus={true}
+                                multiline
+                            />
+                            <ConfirmationButtons onConfirm={handleSave} onCancel={handleCancel}/>
+                        </View>
+                    ) : (
+                        <Text style={styles.content}>
+                            {post.content}
+                        </Text>
+                    )
+                }
                 </View>
 
                 {post.eventInfo && showAttendButton &&
@@ -129,8 +188,16 @@ export const Post = ({postID, shownInFeed, showLikeButton, showCommentButton, sh
             </Pressable>
 
             {post.comments && showComments &&  <View style={styles.commentContainer}>
-                {post.comments.map((comment, index) => <Comment comment={comment} key={"comment" + index}/> )}
+                {post.comments.map((comment, index) => <Comment postID={postID} comment={comment} index={index} key={"comment" + index}/> )}
             </View>}
+
+            <ConfirmationModal
+                title="Delete Post"
+                message="Are you sure you want to delete this post? This action cannot be undone."
+                onConfirm={handlePostDelete}
+                onCancel={() => setIsModalVisible(false)}
+                isVisible={isModalVisible}
+            />
         </>
     );
 }
@@ -144,6 +211,11 @@ const styles = StyleSheet.create({
         borderColor: colors.border,
         borderBottomWidth: 1,
         rowGap:15
+    },
+    input: {
+        fontSize: 14,
+        color: colors.text,
+        textAlign: 'left',
     },
     headerContainer: {
         flexDirection: 'row',

@@ -4,11 +4,16 @@ import {
     collection,
     doc,
     getDocs,
-    onSnapshot, serverTimestamp, setDoc,
+    onSnapshot, 
+    serverTimestamp,
+    setDoc,
+    getDoc,
+    deleteDoc,
     updateDoc,
     query,
-    orderBy, where,
-    limit
+    orderBy, 
+    where,
+    limit,
 } from "firebase/firestore";
 import {db} from "./config/firebaseConfig";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -74,6 +79,55 @@ export function commentOnPost(postID, username, comment) {
         })
     });
 }
+
+export function editPost(postID, content) {
+    return updateDoc(postRef(postID), {
+        content: content
+    });
+}
+
+export async function editComment(postID, commentIndex, newCommentText) {
+    const postSnapshot = await getDoc(postRef(postID));
+    if (!postSnapshot.exists()) {
+        throw new Error('Post not found');
+    }
+    const post = postSnapshot.data();
+
+    if (commentIndex < 0 || commentIndex >= post.comments.length) {
+        throw new Error('Comment index is out of bounds');
+    }
+
+    const updatedComments = [...post.comments];
+    
+    updatedComments[commentIndex] = {
+        ...updatedComments[commentIndex],
+        comment: newCommentText,
+    };
+
+    return updateDoc(postRef(postID), {
+        comments: updatedComments
+    });
+}
+
+
+export function deletePost(postID) {
+    return deleteDoc(postRef(postID));
+}
+
+export async function deleteComment(postID, commentID) {
+    const postSnapshot = await getDoc(postRef(postID));
+    if (!postSnapshot.exists()) {
+        throw new Error('Post not found');
+    }
+    const post = postSnapshot.data();
+
+    const filteredComments = post.comments.filter(comment => comment.id !== commentID);
+
+    return updateDoc(postRef(postID), {
+        comments: filteredComments
+    });
+}
+
 
 async function addPost(content, creator, campus, eventInfo = null, image = null) {
     let post = {

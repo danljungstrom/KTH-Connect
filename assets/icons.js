@@ -3,8 +3,6 @@ import { faHeart as faHeartFilled } from '@fortawesome/free-solid-svg-icons/faHe
 import { faComment } from '@fortawesome/free-regular-svg-icons/faComment'
 import { faMessage } from '@fortawesome/free-regular-svg-icons/faMessage'
 import { faMessageFilled } from '@fortawesome/free-solid-svg-icons/faMessage'
-import { faHouse } from '@fortawesome/free-solid-svg-icons/faHouse'
-import { faHouse as faHouseFilled } from '@fortawesome/free-solid-svg-icons/faHouse'
 import { faUser } from '@fortawesome/free-regular-svg-icons/faUser'
 import { faUser as faUserFilled } from '@fortawesome/free-solid-svg-icons/faUser'
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons/faLocationDot'

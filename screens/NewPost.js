@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingVertical: 50
+    paddingVertical: 40
   },
   postTypeMenu: {
     flexDirection: 'row',
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'flex-start',
     paddingHorizontal: 10,
-    paddingVertical: 30,
+    paddingVertical: 20,
     marginVertical: 20,
     borderColor: colors.border,
     borderTopWidth: 1,
@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
     marginVertical: 5
   },
   postInput: {
+    marginTop: -60,
     color: colors.text
   },
   buttonContainer: {

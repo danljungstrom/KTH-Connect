@@ -4,15 +4,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { trashIcon, penIcon } from '../assets/icons';
 import {colors} from "../assets/colors";
 
-export const EditButtons = ({onPressEdit, onPressTrash}) => {
+export const EditButtons = ({onPressEdit, onPressDelete}) => {
 
   return (
     <View style={styles.buttonsContainer}>
       <Pressable onPress={onPressEdit} style={styles.button}>
-        <FontAwesomeIcon icon={ penIcon } color='white'/>
+        <FontAwesomeIcon icon={ penIcon } color={colors.icons}/>
       </Pressable>
-      <Pressable onPress={onPressTrash} style={styles.button}>
-        <FontAwesomeIcon icon={ trashIcon } color='white'/>
+      <Pressable onPress={onPressDelete} style={styles.button}>
+        <FontAwesomeIcon icon={ trashIcon } color={colors.icons}/>
       </Pressable>
     </View>
   );

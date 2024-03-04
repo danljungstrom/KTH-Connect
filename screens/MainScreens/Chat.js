@@ -4,6 +4,9 @@ import { subscribeToConversations } from '../../firebaseFunctions';
 import { useUser } from '../../services/UserProvider';
 import { colors } from "../../assets/colors";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import dayjs from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat'; // for more formatting options
+dayjs.extend(advancedFormat);
 
 export const Chat = ({navigation}) => {
   const { currentUser } = useUser();
@@ -12,37 +15,38 @@ export const Chat = ({navigation}) => {
   useEffect(() => {
     const unsubscribe = subscribeToConversations(currentUser.username, (updatedConversation) => {
         setConversations(prevConversations => {
-            const index = prevConversations.findIndex(c => c.id === updatedConversation.id);
+            const updatedConversations = [...prevConversations];
+            const index = updatedConversations.findIndex(c => c.id === updatedConversation.id);
             if (index > -1) {
-                return prevConversations.map((c, i) => i === index ? updatedConversation : c);
+                updatedConversations[index] = updatedConversation;
             } else {
-                return [...prevConversations, updatedConversation];
+                updatedConversations.push(updatedConversation);
             }
+            updatedConversations.sort((a, b) => b.latestMessage.timestamp - a.latestMessage.timestamp);
+            return updatedConversations;
         });
     });
-    return () => unsubscribe?.();
+    return () => unsubscribe();
 }, [currentUser.username]);
 
-  const formatDate = (timestamp) => {
-    if (!timestamp) return '';
+const formatDate = (timestamp) => {
+  if (!timestamp || !(timestamp instanceof Date) || isNaN(timestamp)) return 'Invalid date';
 
-    const messageDate = timestamp;
-    const currentDate = new Date();
-  
-    const dayDifference = Math.floor((new Date(currentDate).setHours(0, 0, 0, 0) - new Date(timestamp).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24));
+  const messageDate = dayjs(timestamp);
+  const currentDate = dayjs();
 
-    if (dayDifference === 0) {
-      return 'Today, ' + messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-    } else if (dayDifference === 1) {
-      return 'Yesterday, ' + messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-    } else if (dayDifference < 7) {
-      return messageDate.toLocaleDateString('en-US', { weekday: 'long' }) + 
-      ', ' + messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
-    } else {
-      return messageDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) + 
-      ', ' + messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-    }
+  const dayDifference = currentDate.diff(messageDate.startOf('day'), 'day');
+
+  if (dayDifference === 0) {
+    return `Today, ${messageDate.format('HH:mm')}`;
+  } else if (dayDifference === 1) {
+    return `Yesterday, ${messageDate.format('HH:mm')}`;
+  } else if (dayDifference < 7) {
+    return `${messageDate.format('dddd, HH:mm')}`;
+  } else {
+    return `${messageDate.format('dddd, MMM D, HH:mm')}`;
   }
+};
 
   return (
     <ScrollView style={styles.container}>
